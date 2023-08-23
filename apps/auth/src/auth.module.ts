@@ -3,17 +3,15 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { RmqModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
-import * as Joi from 'joi';
+import { mergedConfigValidationSchema } from './config/main.config';
 
 @Module({
   imports: [
     RmqModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      validationSchema: Joi.object({
-        RABBIT_MQ_URI: Joi.string().required(),
-        RABBIT_MQ_AUTH_QUEUE: Joi.string().required()
-      })
+      validationSchema: mergedConfigValidationSchema,
+      envFilePath: './apps/auth/.env'
     })
   ],
   controllers: [AuthController],

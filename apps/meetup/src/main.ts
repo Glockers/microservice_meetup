@@ -1,12 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { RmqService } from '@app/common';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
+  const logger = new Logger();
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('api');
   const rmqService = app.get<RmqService>(RmqService);
-  app.connectMicroservice(rmqService.getOptions('MEETUP'));
+  app.connectMicroservice(rmqService.getOptions('meetup'));
   await app.startAllMicroservices();
+  logger.log('Meetup запущен');
 }
 bootstrap();
