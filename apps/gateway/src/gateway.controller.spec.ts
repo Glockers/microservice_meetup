@@ -8,7 +8,7 @@ describe('GatewayController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [GatewayController],
-      providers: [GatewayService],
+      providers: [GatewayService]
     }).compile();
 
     gatewayController = app.get<GatewayController>(GatewayController);
