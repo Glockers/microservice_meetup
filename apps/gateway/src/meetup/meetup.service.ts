@@ -2,16 +2,21 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateMeetupRequest } from '../dto/create-meetup.request';
 import { UpdateMeetupRequest } from '../dto/update-meetup.request';
+import { lastValueFrom } from 'rxjs';
+import { Meetup } from '@app/common';
 
+// TODO допсать возвращаемые типы
 @Injectable()
 export class MeetupService {
   constructor(@Inject('meetup') private meetupClient: ClientProxy) {}
 
-  getAllMeetups(): void {
-    this.meetupClient.emit('meetup/getAllMeetups', {});
+  async getAllMeetups() {
+    return await lastValueFrom(
+      this.meetupClient.send<Meetup[]>('meetup/getAllMeetups', {})
+    );
   }
 
-  addMeetup(createdMeetupDTO: CreateMeetupRequest): void {
+  async addMeetup(createdMeetupDTO: CreateMeetupRequest) {
     this.meetupClient.emit('meetup/addMeetup', { createdMeetupDTO });
   }
 
@@ -19,7 +24,7 @@ export class MeetupService {
     this.meetupClient.emit('meetup/removeMeetupById', { id });
   }
 
-  updateMeetup(updateMeetupRequest: UpdateMeetupRequest): void {
-    this.meetupClient.emit('meetup/updateMeetup', { updateMeetupRequest });
+  updateMeetup(updateMeetupRequest: UpdateMeetupRequest, id): void {
+    this.meetupClient.emit('meetup/updateMeetup', { updateMeetupRequest, id });
   }
 }

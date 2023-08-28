@@ -1,5 +1,5 @@
 import { Meetup } from '@app/common';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -15,7 +15,7 @@ export class AppService {
   }
 
   async getAllMeetups() {
-    console.log(this.meetupRepository.find());
+    return this.meetupRepository.find();
   }
 
   async removeMeetupById(meetup: Meetup) {
@@ -24,12 +24,20 @@ export class AppService {
   }
 
   async updateMeetup(data: any) {
-    console.log(data); // TODO
+    const { id, updateMeetupRequest } = data;
+    const user = await this.findById(id);
+    Object.assign(user, updateMeetupRequest);
+    this.meetupRepository.save(user);
   }
 
   async findById(id: number) {
-    return await this.meetupRepository.findOneBy({
+    const selectedUser = await this.meetupRepository.findOneBy({
       id: id
     });
+    if (!selectedUser) {
+      // Обработка, если пользователь не найден
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+    return selectedUser;
   }
 }

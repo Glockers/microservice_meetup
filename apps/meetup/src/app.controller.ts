@@ -18,8 +18,9 @@ export class AppController {
 
   @EventPattern('meetup/getAllMeetups')
   async getAllMeetups(@Ctx() context: RmqContext) {
-    this.appService.getAllMeetups();
+    const meetups = await this.appService.getAllMeetups();
     this.rmqService.ack(context);
+    return { meetups };
   }
 
   @EventPattern('meetup/removeMeetupById')

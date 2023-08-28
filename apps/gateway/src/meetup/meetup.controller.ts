@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post
 } from '@nestjs/common';
@@ -16,22 +17,25 @@ export class MeetupController {
   constructor(private readonly meetupService: MeetupService) {}
 
   @Get('/')
-  getAllMeetups(): void {
-    return this.meetupService.getAllMeetups();
+  async getAllMeetups() {
+    return await this.meetupService.getAllMeetups();
   }
 
   @Post('/add')
-  addMeetup(@Body() createdMeetupDTO: CreateMeetupRequest): void {
-    return this.meetupService.addMeetup(createdMeetupDTO);
+  async addMeetup(@Body() createdMeetupDTO: CreateMeetupRequest) {
+    return await this.meetupService.addMeetup(createdMeetupDTO);
   }
 
   @Delete('/remove/:id')
-  removeMeetupById(@Param('id') id: number): void {
+  removeMeetupById(@Param('id', ParseIntPipe) id: number): void {
     return this.meetupService.removeMeetupById(id);
   }
 
-  @Patch('/update')
-  updateMeetup(@Body() updateMeetupRequest: UpdateMeetupRequest): void {
-    return this.meetupService.updateMeetup(updateMeetupRequest);
+  @Patch('/update/:id')
+  updateMeetup(
+    @Body() updateMeetupRequest: UpdateMeetupRequest,
+    @Param('id', ParseIntPipe) id: number
+  ): void {
+    return this.meetupService.updateMeetup(updateMeetupRequest, id);
   }
 }
