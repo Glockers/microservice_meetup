@@ -6,7 +6,7 @@ import { RmqModule } from '@app/common';
 @Module({
   imports: [
     RmqModule.register({
-      name: 'meetup'
+      name: 'MEETUP'
     })
   ],
   providers: [MeetupService],

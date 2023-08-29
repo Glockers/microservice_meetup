@@ -3,8 +3,6 @@ import { AppService } from './app.service';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { Meetup, RmqService } from '@app/common';
 import { CreateMeetupRequest } from './dto/create-meetup.request';
-import { UpdateMeetupRequest } from './dto/update-meetup.request';
-import { IdRequest } from './dto/id-request';
 
 @Controller()
 export class AppController {
@@ -15,7 +13,7 @@ export class AppController {
 
   @EventPattern('meetup/addMeetup')
   async addMeetup(
-    @Payload() data: CreateMeetupRequest,
+    @Payload('createdMeetupDTO') data: CreateMeetupRequest,
     @Ctx() context: RmqContext
   ) {
     this.appService.addMeetup(data);
@@ -33,20 +31,21 @@ export class AppController {
 
   @EventPattern('meetup/removeMeetupById')
   async removeMeetupById(
-    @Payload() data: IdRequest,
+    @Payload('id') id: number,
     @Ctx() context: RmqContext
   ): Promise<void> {
-    const { id } = data;
     this.appService.removeMeetupById(id);
     this.rmqService.ack(context);
   }
 
   @EventPattern('meetup/updateMeetup')
   async updateMeetup(
-    @Payload() data: UpdateMeetupRequest,
+    @Payload('updateMeetupRequest') updateMeetupRequest: CreateMeetupRequest,
+    @Payload('id') id: number,
     @Ctx() context: RmqContext
   ): Promise<void> {
-    this.appService.updateMeetup(data);
+    console.log(updateMeetupRequest, id);
+    // this.appService.updateMeetup(data);
     this.rmqService.ack(context);
   }
 }

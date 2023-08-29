@@ -4,9 +4,8 @@ import { RmqService } from '@app/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
-  app.setGlobalPrefix('api');
   const rmqService = app.get<RmqService>(RmqService);
-  app.connectMicroservice(rmqService.getOptions('auth'));
+  app.connectMicroservice(rmqService.getOptions('AUTH'));
   await app.startAllMicroservices();
 }
 bootstrap();

@@ -8,6 +8,7 @@ export class JoiValidationPipe implements PipeTransform {
   transform(value: ObjectSchema) {
     const { error } = this.schema.validate(value);
 
+    console.log(value);
     if (error) {
       throw new BadRequestException(error.message);
     }

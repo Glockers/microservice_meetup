@@ -1,16 +1,24 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UsePipes } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { RegistrationRequest } from './dto/reg-request';
+import { JoiValidationPipe } from '@app/common';
+import { registrationRequestSchema } from './schemas/reg-schema';
+import { authRequestSchema } from './schemas/auth-schema';
+import { AuthRequest } from './dto/auth-request';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
   @Post('/login')
-  loginUser(): string {
-    return this.authService.login();
+  @UsePipes(new JoiValidationPipe(authRequestSchema))
+  async loginUser(@Body() authRequest: AuthRequest) {
+    await this.authService.login(authRequest);
   }
 
   @Post('/reg')
-  registerUser(): string {
-    return this.authService.register();
+  @UsePipes(new JoiValidationPipe(registrationRequestSchema))
+  registerUser(@Body() registrationRequest: RegistrationRequest): void {
+    this.authService.reg(registrationRequest);
   }
 }

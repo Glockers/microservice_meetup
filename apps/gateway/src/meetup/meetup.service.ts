@@ -7,7 +7,7 @@ import { Meetup } from '@app/common';
 // TODO допсать возвращаемые типы
 @Injectable()
 export class MeetupService {
-  constructor(@Inject('meetup') private meetupClient: ClientProxy) {}
+  constructor(@Inject('MEETUP') private meetupClient: ClientProxy) {}
 
   async getAllMeetups() {
     return await lastValueFrom(

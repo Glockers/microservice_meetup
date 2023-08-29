@@ -38,9 +38,9 @@ export class MeetupController {
   }
 
   @Patch('/update/:id')
-  @UsePipes(new JoiValidationPipe(updateMeetupRequestSchema))
   updateMeetup(
-    @Body() updateMeetupRequest: CreateMeetupRequest,
+    @Body(new JoiValidationPipe(updateMeetupRequestSchema))
+    updateMeetupRequest: CreateMeetupRequest,
     @Param('id', ParseIntPipe) id: number
   ): void {
     return this.meetupService.updateMeetup(updateMeetupRequest, id);

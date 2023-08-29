@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { RmqModule } from '@app/common';
+import { DatabaseModule, RmqModule, User } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
 import { mergedConfigValidationSchema } from './config/main.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -12,7 +13,9 @@ import { mergedConfigValidationSchema } from './config/main.config';
       isGlobal: true,
       validationSchema: mergedConfigValidationSchema,
       envFilePath: './apps/auth/.env'
-    })
+    }),
+    DatabaseModule,
+    TypeOrmModule.forFeature([User])
   ],
   controllers: [AuthController],
   providers: [AuthService]
