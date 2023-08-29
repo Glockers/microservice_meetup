@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateMeetupRequest } from '../dto/create-meetup.request';
-import { UpdateMeetupRequest } from '../dto/update-meetup.request';
+import { CreateMeetupRequest } from './dto/create-meetup.request';
 import { lastValueFrom } from 'rxjs';
 import { Meetup } from '@app/common';
 
@@ -24,7 +23,7 @@ export class MeetupService {
     this.meetupClient.emit('meetup/removeMeetupById', { id });
   }
 
-  updateMeetup(updateMeetupRequest: UpdateMeetupRequest, id): void {
+  updateMeetup(updateMeetupRequest: CreateMeetupRequest, id): void {
     this.meetupClient.emit('meetup/updateMeetup', { updateMeetupRequest, id });
   }
 }

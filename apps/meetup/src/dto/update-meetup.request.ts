@@ -1,5 +1,6 @@
 import { CreateMeetupRequest } from './create-meetup.request';
 
-export class UpdateMeetupRequest extends CreateMeetupRequest {
+export class UpdateMeetupRequest {
   id: number;
+  createMeetupRequest: CreateMeetupRequest;
 }

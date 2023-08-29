@@ -6,11 +6,16 @@ import {
   Param,
   ParseIntPipe,
   Patch,
-  Post
+  Post,
+  UsePipes
 } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
-import { CreateMeetupRequest } from '../dto/create-meetup.request';
-import { UpdateMeetupRequest } from '../dto/update-meetup.request';
+import { CreateMeetupRequest } from './dto/create-meetup.request';
+import { JoiValidationPipe } from '@app/common';
+import {
+  createMeetupRequestSchema,
+  updateMeetupRequestSchema
+} from './schemas';
 
 @Controller('meetup')
 export class MeetupController {
@@ -22,6 +27,7 @@ export class MeetupController {
   }
 
   @Post('/add')
+  @UsePipes(new JoiValidationPipe(createMeetupRequestSchema))
   async addMeetup(@Body() createdMeetupDTO: CreateMeetupRequest) {
     return await this.meetupService.addMeetup(createdMeetupDTO);
   }
@@ -32,8 +38,9 @@ export class MeetupController {
   }
 
   @Patch('/update/:id')
+  @UsePipes(new JoiValidationPipe(updateMeetupRequestSchema))
   updateMeetup(
-    @Body() updateMeetupRequest: UpdateMeetupRequest,
+    @Body() updateMeetupRequest: CreateMeetupRequest,
     @Param('id', ParseIntPipe) id: number
   ): void {
     return this.meetupService.updateMeetup(updateMeetupRequest, id);

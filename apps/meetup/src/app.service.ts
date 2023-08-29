@@ -2,6 +2,8 @@ import { Meetup } from '@app/common';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateMeetupRequest } from './dto/create-meetup.request';
+import { UpdateMeetupRequest } from './dto/update-meetup.request';
 
 @Injectable()
 export class AppService {
@@ -10,33 +12,33 @@ export class AppService {
     private meetupRepository: Repository<Meetup>
   ) {}
 
-  async addMeetup(data: any) {
+  async addMeetup(data: CreateMeetupRequest): Promise<void> {
     this.meetupRepository.save(data);
   }
 
-  async getAllMeetups() {
+  async getAllMeetups(): Promise<Meetup[]> {
     return this.meetupRepository.find();
   }
 
-  async removeMeetupById(meetup: Meetup) {
-    const selectedMeetup = await this.findById(meetup.id);
+  async removeMeetupById(id: number): Promise<void> {
+    console.log(id);
+    const selectedMeetup = await this.findById(id);
     this.meetupRepository.delete(selectedMeetup);
   }
 
-  async updateMeetup(data: any) {
-    const { id, updateMeetupRequest } = data;
+  async updateMeetup(data: UpdateMeetupRequest): Promise<void> {
+    const { id, createMeetupRequest } = data;
     const user = await this.findById(id);
-    Object.assign(user, updateMeetupRequest);
+    Object.assign(user, createMeetupRequest);
     this.meetupRepository.save(user);
   }
 
-  async findById(id: number) {
+  async findById(id: number): Promise<Meetup> {
     const selectedUser = await this.meetupRepository.findOneBy({
       id: id
     });
     if (!selectedUser) {
-      // Обработка, если пользователь не найден
-      throw new NotFoundException(`User with id ${id} not found`);
+      throw new NotFoundException(`meetup with id ${id} not found`);
     }
     return selectedUser;
   }
