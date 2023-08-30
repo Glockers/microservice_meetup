@@ -18,7 +18,13 @@ export class AuthController {
 
   @Post('/reg')
   @UsePipes(new JoiValidationPipe(registrationRequestSchema))
-  registerUser(@Body() registrationRequest: RegistrationRequest): void {
-    this.authService.reg(registrationRequest);
+  async registerUser(
+    @Body() registrationRequest: RegistrationRequest
+  ): Promise<void> {
+    try {
+      await this.authService.reg(registrationRequest);
+    } catch (err) {
+      return err;
+    }
   }
 }

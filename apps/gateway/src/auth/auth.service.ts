@@ -20,6 +20,8 @@ export class AuthService {
   }
 
   async reg(registrationRequest: RegistrationRequest) {
-    this.authClient.emit('auth/reg', { registrationRequest });
+    return await lastValueFrom(
+      this.authClient.send('auth/reg', { registrationRequest })
+    );
   }
 }

@@ -17,6 +17,7 @@ export class AuthController {
     @Payload('authRequest') data: AuthRequest,
     @Ctx() context: RmqContext
   ) {
+    await this.authService.login(data);
     this.rmqService.ack(context);
     const jwtToken = 'mock';
     return { jwtToken };
@@ -27,7 +28,8 @@ export class AuthController {
     @Payload('registrationRequest') data: RegistrationRequest,
     @Ctx() context: RmqContext
   ) {
-    this.authService.reg(data);
+    await this.authService.reg(data);
     this.rmqService.ack(context);
+    return {};
   }
 }
