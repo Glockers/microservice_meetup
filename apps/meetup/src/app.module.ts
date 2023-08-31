@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule, Meetup, RmqModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
-import { mergedConfigValidationSchema } from './config/main.config';
+import { mergedConfigValidationSchema } from './schemas/main';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({

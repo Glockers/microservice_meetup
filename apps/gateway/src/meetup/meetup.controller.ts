@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   Param,
   ParseIntPipe,
   Patch,
@@ -11,11 +12,11 @@ import {
 } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
 import { CreateMeetupRequest } from './dto/create-meetup.request';
-import { JoiValidationPipe } from '@app/common';
 import {
   createMeetupRequestSchema,
   updateMeetupRequestSchema
 } from './schemas';
+import { JoiValidationPipe } from '../helpers';
 
 @Controller('meetup')
 export class MeetupController {
@@ -29,20 +30,24 @@ export class MeetupController {
   @Post('/add')
   @UsePipes(new JoiValidationPipe(createMeetupRequestSchema))
   async addMeetup(@Body() createdMeetupDTO: CreateMeetupRequest) {
-    return await this.meetupService.addMeetup(createdMeetupDTO);
+    try {
+      return await this.meetupService.addMeetup(createdMeetupDTO);
+    } catch (err) {
+      throw new HttpException(err, err.code);
+    }
   }
 
   @Delete('/remove/:id')
-  removeMeetupById(@Param('id', ParseIntPipe) id: number): void {
-    return this.meetupService.removeMeetupById(id);
+  async removeMeetupById(@Param('id', ParseIntPipe) id: number) {
+    return await this.meetupService.removeMeetupById(id);
   }
 
   @Patch('/update/:id')
-  updateMeetup(
+  async updateMeetup(
     @Body(new JoiValidationPipe(updateMeetupRequestSchema))
     updateMeetupRequest: CreateMeetupRequest,
     @Param('id', ParseIntPipe) id: number
-  ): void {
-    return this.meetupService.updateMeetup(updateMeetupRequest, id);
+  ) {
+    return await this.meetupService.updateMeetup(updateMeetupRequest, id);
   }
 }

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MeetupModule } from './meetup/meetup.module';
-import { mergedConfigValidationSchema } from './config/main.config';
+import { mergedConfigValidationSchema } from './config';
 
 @Module({
   imports: [

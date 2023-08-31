@@ -1,10 +1,10 @@
 import { Body, Controller, Post, UsePipes } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegistrationRequest } from './dto/reg-request';
-import { JoiValidationPipe } from '@app/common';
-import { registrationRequestSchema } from './schemas/reg-schema';
-import { authRequestSchema } from './schemas/auth-schema';
+import { registrationRequestSchema } from './schemas/reg.schema';
+import { authRequestSchema } from './schemas/auth.schema';
 import { AuthRequest } from './dto/auth-request';
+import { JoiValidationPipe } from '../helpers';
 
 @Controller('auth')
 export class AuthController {

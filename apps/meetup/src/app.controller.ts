@@ -1,26 +1,34 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
-import { Meetup, RmqService } from '@app/common';
+import { Meetup, RmqService, RpcFilter } from '@app/common';
 import { CreateMeetupRequest } from './dto/create-meetup.request';
+import {
+  ADD_MEETUP,
+  ALL_MEETUPS,
+  REMOVE_MEETUP,
+  UPDATE_MEETUP
+} from './constants/meetup-endpoints';
 
 @Controller()
+@UseFilters(new RpcFilter())
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly rmqService: RmqService
   ) {}
 
-  @EventPattern('meetup/addMeetup')
+  @EventPattern(ADD_MEETUP)
   async addMeetup(
     @Payload('createdMeetupDTO') data: CreateMeetupRequest,
     @Ctx() context: RmqContext
   ) {
-    this.appService.addMeetup(data);
+    await this.appService.addMeetup(data);
     this.rmqService.ack(context);
+    return {};
   }
 
-  @EventPattern('meetup/getAllMeetups')
+  @EventPattern(ALL_MEETUPS)
   async getAllMeetups(@Ctx() context: RmqContext): Promise<{
     meetups: Meetup[];
   }> {
@@ -29,23 +37,25 @@ export class AppController {
     return { meetups };
   }
 
-  @EventPattern('meetup/removeMeetupById')
+  @EventPattern(REMOVE_MEETUP)
   async removeMeetupById(
     @Payload('id') id: number,
     @Ctx() context: RmqContext
-  ): Promise<void> {
+  ) {
     this.appService.removeMeetupById(id);
     this.rmqService.ack(context);
+    return {};
   }
 
-  @EventPattern('meetup/updateMeetup')
+  @EventPattern(UPDATE_MEETUP)
   async updateMeetup(
     @Payload('updateMeetupRequest') updateMeetupRequest: CreateMeetupRequest,
     @Payload('id') id: number,
     @Ctx() context: RmqContext
-  ): Promise<void> {
-    console.log(updateMeetupRequest, id);
-    // this.appService.updateMeetup(data);
+  ) {
+    console.log(updateMeetupRequest);
+    await this.appService.updateMeetup(updateMeetupRequest, id);
     this.rmqService.ack(context);
+    return {};
   }
 }

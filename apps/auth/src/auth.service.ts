@@ -6,9 +6,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AuthRequest } from './dto/auth-request';
-import { RegistrationRequest } from './dto/reg-request';
+import { AuthRequest } from './dto/auth.request';
+import { RegistrationRequest } from './dto/reg.request';
 import { RpcException } from '@nestjs/microservices';
+import { USER_ALREADY_REG, USER_NOT_FOUND } from './constants';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,7 @@ export class AuthService {
   async login(authRequest: AuthRequest) {
     const selectedUser = await this.findUserByLogin(authRequest.login);
     if (!selectedUser)
-      throw new RpcException(new NotFoundException('this user not found'));
+      throw new RpcException(new NotFoundException(USER_NOT_FOUND));
     return authRequest.login === selectedUser.login &&
       authRequest.password === selectedUser.password
       ? 'jwt'
@@ -30,7 +31,7 @@ export class AuthService {
   async reg(registrationRequest: RegistrationRequest) {
     const selectedUser = await this.findUserByLogin(registrationRequest.login);
     if (selectedUser)
-      throw new RpcException(new ConflictException('this user alreay reg'));
+      throw new RpcException(new ConflictException(USER_ALREADY_REG));
     this.userRepository.save(registrationRequest);
   }
 
