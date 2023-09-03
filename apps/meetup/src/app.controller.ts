@@ -1,7 +1,7 @@
 import { Controller, UseFilters } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
-import { Meetup, RmqService, RpcFilter } from '@app/common';
+import { RmqService, RpcFilter } from '@app/common';
 import { CreateMeetupRequest } from './dto/create-meetup.request';
 import {
   ADD_MEETUP,
@@ -9,6 +9,7 @@ import {
   REMOVE_MEETUP,
   UPDATE_MEETUP
 } from './constants/meetup-endpoints';
+import { Meetup } from './models';
 
 @Controller()
 @UseFilters(new RpcFilter())

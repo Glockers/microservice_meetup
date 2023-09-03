@@ -9,6 +9,6 @@ async function bootstrap() {
   const rmqService = app.get<RmqService>(RmqService);
   app.connectMicroservice(rmqService.getOptions('meetup'));
   await app.startAllMicroservices();
-  logger.log('Meetup запущен');
+  logger.log('Meetup service is loading', 'Microservice');
 }
 bootstrap();

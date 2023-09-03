@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DatabaseModule, Meetup, RmqModule } from '@app/common';
+import { DatabaseModule, RmqModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
 import { mergedConfigValidationSchema } from './schemas/main';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Meetup } from './models/meetup.entity';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       validationSchema: mergedConfigValidationSchema,
       envFilePath: './apps/meetup/.env'
     }),
-    DatabaseModule,
+    DatabaseModule.addEntities([Meetup]),
     TypeOrmModule.forFeature([Meetup])
   ],
   controllers: [AppController],

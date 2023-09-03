@@ -1,9 +1,9 @@
-import { Meetup } from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateMeetupRequest } from './dto/create-meetup.request';
 import { RpcException } from '@nestjs/microservices';
+import { Meetup } from './models';
 
 @Injectable()
 export class AppService {
@@ -17,6 +17,7 @@ export class AppService {
   }
 
   async getAllMeetups(): Promise<Meetup[]> {
+    console.log(await this.meetupRepository.find());
     return await this.meetupRepository.find();
   }
 

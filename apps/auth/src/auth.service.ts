@@ -1,4 +1,3 @@
-import { User } from '@app/common';
 import {
   ConflictException,
   Injectable,
@@ -10,6 +9,7 @@ import { AuthRequest } from './dto/auth.request';
 import { RegistrationRequest } from './dto/reg.request';
 import { RpcException } from '@nestjs/microservices';
 import { USER_ALREADY_REG, USER_NOT_FOUND } from './constants';
+import { User } from './models';
 
 @Injectable()
 export class AuthService {
