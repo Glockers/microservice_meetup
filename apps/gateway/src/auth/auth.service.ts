@@ -10,7 +10,6 @@ export class AuthService {
   constructor(@Inject('AUTH') private authClient: ClientProxy) {}
 
   async login(authRequest: AuthRequest) {
-    console.log('gateway: ', authRequest);
     return await lastValueFrom(
       this.authClient.send<any>(AUTH_LOGIN, { authRequest })
     );

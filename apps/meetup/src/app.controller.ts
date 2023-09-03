@@ -54,7 +54,6 @@ export class AppController {
     @Payload('id') id: number,
     @Ctx() context: RmqContext
   ) {
-    console.log(updateMeetupRequest);
     await this.appService.updateMeetup(updateMeetupRequest, id);
     this.rmqService.ack(context);
     return {};

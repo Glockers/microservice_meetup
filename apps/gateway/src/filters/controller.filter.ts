@@ -2,7 +2,8 @@ import {
   ExceptionFilter,
   Catch,
   ArgumentsHost,
-  HttpStatus
+  HttpStatus,
+  Logger
 } from '@nestjs/common';
 
 interface HttpException {
@@ -17,10 +18,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const status = exception.status || HttpStatus.INTERNAL_SERVER_ERROR;
     const message = exception || {
-      status: HttpStatus.INTERNAL_SERVER_ERROR,
       message: 'Internal Server Error'
     };
-
+    new Logger().error(exception, 'Gateway');
     response.status(status).json(message);
   }
 }

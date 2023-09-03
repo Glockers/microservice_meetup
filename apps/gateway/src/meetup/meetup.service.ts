@@ -22,13 +22,9 @@ export class MeetupService {
   }
 
   async addMeetup(createdMeetupDTO: CreateMeetupRequest) {
-    try {
-      await lastValueFrom(
-        this.meetupClient.send(ADD_MEETUP, { createdMeetupDTO })
-      );
-    } catch (err) {
-      console.log(err);
-    }
+    await lastValueFrom(
+      this.meetupClient.send(ADD_MEETUP, { createdMeetupDTO })
+    );
   }
 
   async removeMeetupById(id: number) {
