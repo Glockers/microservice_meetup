@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  PrimaryGeneratedColumn
-} from 'typeorm';
-import { User } from './user.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('meetups')
 export class Meetup {
@@ -30,12 +22,4 @@ export class Meetup {
 
   @Column({ type: 'decimal', precision: 10, scale: 7, nullable: true })
   longitude: number;
-
-  @ManyToOne(() => User, (user) => user.organizedMeetups)
-  @JoinTable({ name: 'organizer' })
-  organizer: User;
-
-  @ManyToMany(() => User, (user) => user.id)
-  @JoinTable({ name: 'participants' })
-  participants: User[];
 }

@@ -9,9 +9,10 @@ export class RpcFilter implements RpcExceptionFilter {
       return throwError(() => error.getError());
     }
     return throwError(() => {
+      console.log(error);
       return {
         status: 500,
-        message: 'Server error'
+        message: error
       };
     });
   }

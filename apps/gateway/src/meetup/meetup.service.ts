@@ -2,13 +2,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateMeetupRequest } from './dto/create-meetup.request';
 import { lastValueFrom } from 'rxjs';
-import { Meetup } from '@app/common';
 import {
   ADD_MEETUP,
   ALL_MEETUPS,
   REMOVE_MEETUP,
   UPDATE_MEETUP
 } from '../constants';
+import { Meetup } from 'apps/meetup/src/models';
 
 // TODO допсать возвращаемые типы
 @Injectable()
@@ -17,7 +17,7 @@ export class MeetupService {
 
   async getAllMeetups() {
     return await lastValueFrom(
-      this.meetupClient.send<Meetup[]>(ALL_MEETUPS, null)
+      this.meetupClient.send<Meetup[]>(ALL_MEETUPS, {})
     );
   }
 
