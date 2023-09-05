@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { mergedConfigValidationSchema } from './schemas/main';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './models';
+import { AtStraregy, RtStraregy } from './strategies';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -16,9 +18,10 @@ import { User } from './models';
       envFilePath: './apps/auth/.env'
     }),
     DatabaseModule.addEntities([User]),
-    TypeOrmModule.forFeature([User])
+    TypeOrmModule.forFeature([User]),
+    JwtModule.register({})
   ],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService, AtStraregy, RtStraregy]
 })
 export class AuthModule {}

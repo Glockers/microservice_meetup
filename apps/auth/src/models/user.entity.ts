@@ -13,4 +13,7 @@ export class User {
 
   @Column({ type: 'varchar' })
   public avatar!: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  public hashedRt!: string;
 }
