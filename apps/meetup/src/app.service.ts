@@ -17,7 +17,6 @@ export class AppService {
   }
 
   async getAllMeetups(): Promise<Meetup[]> {
-    console.log(await this.meetupRepository.find());
     return await this.meetupRepository.find();
   }
 

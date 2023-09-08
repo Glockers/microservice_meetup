@@ -1,20 +1,15 @@
-import {
-  Catch,
-  RpcExceptionFilter,
-  Logger,
-  ArgumentsHost
-} from '@nestjs/common';
-import { RmqContext, RpcException } from '@nestjs/microservices';
+import { Catch, RpcExceptionFilter, Logger } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { Observable, throwError } from 'rxjs';
 
 @Catch()
 export class RpcFilter implements RpcExceptionFilter {
-  catch(error: unknown, host: ArgumentsHost): Observable<never> {
+  catch(error: unknown): Observable<never> {
     new Logger().error(error, 'Microservice');
 
-    const context = host.switchToRpc().getContext<RmqContext>();
-    const channel = context.getChannelRef();
-    channel.ack(context.getMessage());
+    // const context = host.switchToRpc().getContext<RmqContext>();
+    // const channel = context.getChannelRef();
+    // channel.ack(context.getMessage());
 
     if (error instanceof RpcException) {
       return throwError(() => error.getError());

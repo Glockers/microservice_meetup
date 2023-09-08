@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
   UsePipes
 } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
@@ -17,8 +18,10 @@ import {
   updateMeetupRequestSchema
 } from './schemas';
 import { JoiValidationPipe } from '../helpers';
+import { AuthGuard } from '../guards/auth.guard';
 
 @Controller('meetup')
+@UseGuards(AuthGuard)
 export class MeetupController {
   constructor(private readonly meetupService: MeetupService) {}
 

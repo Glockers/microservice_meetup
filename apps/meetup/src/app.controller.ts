@@ -1,7 +1,7 @@
 import { Controller, UseFilters } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
-import { RmqService, RpcFilter } from '@app/common';
+import { EventPattern, Payload } from '@nestjs/microservices';
+import { RpcFilter } from '@app/common';
 import { CreateMeetupRequest } from './dto/create-meetup.request';
 import {
   ADD_MEETUP,
@@ -14,48 +14,34 @@ import { Meetup } from './models';
 @Controller()
 @UseFilters(new RpcFilter())
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    private readonly rmqService: RmqService
-  ) {}
+  constructor(private readonly appService: AppService) {}
 
   @EventPattern(ADD_MEETUP)
-  async addMeetup(
-    @Payload('createdMeetupDTO') data: CreateMeetupRequest,
-    @Ctx() context: RmqContext
-  ) {
+  async addMeetup(@Payload('createdMeetupDTO') data: CreateMeetupRequest) {
     await this.appService.addMeetup(data);
-    this.rmqService.ack(context);
-    return {};
+    return { success: true };
   }
 
   @EventPattern(ALL_MEETUPS)
-  async getAllMeetups(@Ctx() context: RmqContext): Promise<{
+  async getAllMeetups(): Promise<{
     meetups: Meetup[];
   }> {
     const meetups = await this.appService.getAllMeetups();
-    this.rmqService.ack(context);
     return { meetups };
   }
 
   @EventPattern(REMOVE_MEETUP)
-  async removeMeetupById(
-    @Payload('id') id: number,
-    @Ctx() context: RmqContext
-  ) {
+  async removeMeetupById(@Payload('id') id: number) {
     this.appService.removeMeetupById(id);
-    this.rmqService.ack(context);
-    return {};
+    return { success: true };
   }
 
   @EventPattern(UPDATE_MEETUP)
   async updateMeetup(
     @Payload('updateMeetupRequest') updateMeetupRequest: CreateMeetupRequest,
-    @Payload('id') id: number,
-    @Ctx() context: RmqContext
+    @Payload('id') id: number
   ) {
     await this.appService.updateMeetup(updateMeetupRequest, id);
-    this.rmqService.ack(context);
-    return {};
+    return { success: true };
   }
 }
