@@ -10,4 +10,6 @@ export class CreateMeetupRequest {
   latitude: number;
 
   longitude: number;
+
+  tags: string[];
 }

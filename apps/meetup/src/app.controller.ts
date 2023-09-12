@@ -32,7 +32,7 @@ export class AppController {
 
   @EventPattern(REMOVE_MEETUP)
   async removeMeetupById(@Payload('id') id: number) {
-    this.appService.removeMeetupById(id);
+    await this.appService.removeMeetupById(id);
     return { result: true };
   }
 

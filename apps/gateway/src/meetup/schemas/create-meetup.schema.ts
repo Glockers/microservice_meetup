@@ -6,5 +6,6 @@ export const createMeetupRequestSchema = Joi.object({
   dateStart: Joi.date().iso().required(),
   dateEnd: Joi.date().iso().required(),
   latitude: Joi.number().required(),
-  longitude: Joi.number().required()
+  longitude: Joi.number().required(),
+  tags: Joi.array().items(Joi.string()).required()
 });

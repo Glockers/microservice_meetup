@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Tags } from './tag-meetup.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  OneToMany,
+  PrimaryGeneratedColumn
+} from 'typeorm';
 
 @Entity('meetups')
 export class Meetup {
@@ -22,4 +29,8 @@ export class Meetup {
 
   @Column({ type: 'decimal', precision: 10, scale: 7, nullable: true })
   longitude: number;
+
+  @OneToMany(() => Tags, (tags) => tags.meetup)
+  @JoinTable()
+  tags: Tags[];
 }

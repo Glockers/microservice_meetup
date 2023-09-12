@@ -37,6 +37,7 @@ export class MeetupController {
   @UsePipes(new JoiValidationPipe(createMeetupRequestSchema))
   async addMeetup(@Body() createdMeetupDTO: CreateMeetupRequest) {
     await this.meetupService.addMeetup(createdMeetupDTO);
+    console.log(createdMeetupDTO);
 
     return {
       status: HttpStatus.OK,
