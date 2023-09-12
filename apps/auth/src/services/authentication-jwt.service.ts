@@ -4,39 +4,46 @@ import { Repository } from 'typeorm';
 import { User } from '../models';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { EToken, Tokens } from '../types';
+import { TokenTypeEnum, Tokens } from '../types';
 import { RpcException } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from '../types/payload.type';
+import { AT_EXPIRES, RT_EXPIRES } from '../constants';
 
 @Injectable()
 export class AuthenticationJwtService {
+  private readonly AT_SECRET: string;
+  private readonly RT_SECRET: string;
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private jwtService: JwtService,
     private configService: ConfigService
-  ) {}
+  ) {
+    this.AT_SECRET = this.configService.get<string>('SECRET_JWT_ACCESS');
+    this.RT_SECRET = this.configService.get<string>('SECRET_JWT_REFRESH');
+  }
 
-  async validateToken(token: string, typeToken: EToken) {
-    const { login, id } = await this.decodeToken(token, typeToken);
+  async verifyToken(
+    token: string,
+    typeToken: TokenTypeEnum
+  ): Promise<TokenPayload> {
+    const secret =
+      TokenTypeEnum.ACCESS_TOKEN === typeToken
+        ? this.AT_SECRET
+        : this.RT_SECRET;
+    const { id } = await this.jwtService.verifyAsync<TokenPayload>(token, {
+      secret: secret
+    });
+
     const selectedUser = this.userRepository.findOneBy({
-      login
+      id
     });
 
     if (!selectedUser) throw new RpcException(new UnauthorizedException());
 
-    return { login, id };
-  }
-
-  async decodeToken(token: string, typeToken: EToken): Promise<TokenPayload> {
-    const secret =
-      EToken.ACCESS_TOKEN === typeToken
-        ? this.configService.get<string>('SECRET_JWT_ACCESS')
-        : this.configService.get<string>('SECRET_JWT_REFRESH');
-    return await this.jwtService.verifyAsync<TokenPayload>(token, {
-      secret: secret
-    });
+    return { id };
   }
 
   async hashData(data: string): Promise<string> {
@@ -44,36 +51,39 @@ export class AuthenticationJwtService {
   }
 
   async updateRtHash(userID: number, rt: string) {
-    const hash = await this.hashData(rt);
     const selecteduser = await this.userRepository.findOneBy({
       id: userID
     });
-    selecteduser.hashedRt = hash;
+    selecteduser.hashedRt = rt;
     await this.userRepository.save(selecteduser);
   }
 
-  async getTokens(id: number, login: string): Promise<Tokens> {
-    const AT_SECRET = this.configService.get<string>('SECRET_JWT_ACCESS');
-    const RT_SECRET = this.configService.get<string>('SECRET_JWT_REFRESH');
+  async checkIfRtIsWhiteListed(rt: string): Promise<boolean> {
+    const rtRecord = await this.userRepository.findOneBy({
+      hashedRt: rt
+    });
+
+    if (!rtRecord) false;
+    return true;
+  }
+  async getTokens(id: number): Promise<Tokens> {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
         {
-          id,
-          login
+          id
         },
         {
-          secret: AT_SECRET,
-          expiresIn: 60 * 5
+          secret: this.AT_SECRET,
+          expiresIn: AT_EXPIRES
         }
       ),
       this.jwtService.signAsync(
         {
-          id,
-          login
+          id
         },
         {
-          secret: RT_SECRET,
-          expiresIn: 60 * 60 * 24 * 7
+          secret: this.RT_SECRET,
+          expiresIn: RT_EXPIRES
         }
       )
     ]);

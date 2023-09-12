@@ -3,7 +3,7 @@ export type Tokens = {
   refresh_token: string;
 };
 
-export enum TokenTypeEnum {
+export enum EToken {
   ACCESS_TOKEN,
   REFRESH_TOKEN
 }

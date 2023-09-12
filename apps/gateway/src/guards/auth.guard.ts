@@ -2,35 +2,21 @@ import {
   CanActivate,
   ExecutionContext,
   Inject,
-  Injectable,
-  UnauthorizedException
+  Injectable
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Tokens } from '../types';
+import { AuthService } from '../auth/auth.service';
 import { Request } from 'express';
-import { Observable, catchError, of, tap } from 'rxjs';
+import { NAME_JWT_COOKIE } from '../constants/jwt';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(@Inject('AUTH') private readonly authService: ClientProxy) {}
+  constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
-  canActivate(
-    context: ExecutionContext
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    if (context.getType() !== 'http') {
-      return false;
-    }
-
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    const cookie = request?.cookies;
-
-    if (!cookie || Object.keys(cookie).length === 0) return false;
-    return this.authService.send('auth/validate_access_token', cookie).pipe(
-      tap((res) => {
-        return of(res.accessDenied);
-      }),
-      catchError(() => {
-        throw new UnauthorizedException();
-      })
-    );
+    const tokens = request?.cookies[NAME_JWT_COOKIE] as Tokens;
+    if (!tokens || Object.keys(tokens).length === 0) return false;
+    return await this.authService.validateAt(tokens);
   }
 }

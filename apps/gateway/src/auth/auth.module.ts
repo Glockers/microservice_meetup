@@ -10,6 +10,7 @@ import { RmqModule } from '@app/common';
     })
   ],
   providers: [AuthService],
-  controllers: [AuthController]
+  controllers: [AuthController],
+  exports: [AuthService]
 })
 export class AuthModule {}

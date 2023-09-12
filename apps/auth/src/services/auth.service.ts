@@ -11,8 +11,9 @@ import { RpcException } from '@nestjs/microservices';
 import { USER_ALREADY_REG, ACCESS_DENIED } from '../constants';
 import { User } from '../models';
 import * as bcrypt from 'bcrypt';
-import { EToken, Tokens } from '../types';
+import { TokenTypeEnum, Tokens } from '../types';
 import { AuthenticationJwtService } from './authentication-jwt.service';
+import { TokenPayload } from '../types/payload.type';
 
 @Injectable()
 export class AuthService {
@@ -40,9 +41,9 @@ export class AuthService {
       throw new RpcException(new ForbiddenException(ACCESS_DENIED));
 
     const tokens = await this.authenticationJwtService.getTokens(
-      selectedUser.id,
-      selectedUser.login
+      selectedUser.id
     );
+
     await this.authenticationJwtService.updateRtHash(
       selectedUser.id,
       tokens.refresh_token
@@ -62,10 +63,7 @@ export class AuthService {
       password: hash
     });
 
-    const tokens = await this.authenticationJwtService.getTokens(
-      newUser.id,
-      newUser.login
-    );
+    const tokens = await this.authenticationJwtService.getTokens(newUser.id);
     await this.authenticationJwtService.updateRtHash(
       newUser.id,
       tokens.refresh_token
@@ -79,13 +77,22 @@ export class AuthService {
     });
   }
 
-  async refresh(rt: string): Promise<Tokens> {
-    const { id, login } = await this.authenticationJwtService.validateToken(
-      rt,
-      EToken.REFRESH_TOKEN
-    );
+  async verifyRt(rt: string): Promise<TokenPayload> {
+    const isExistRt =
+      await this.authenticationJwtService.checkIfRtIsWhiteListed(rt);
+    if (!isExistRt)
+      throw new RpcException(new ConflictException('Неверный rt'));
 
-    const newTokens = await this.authenticationJwtService.getTokens(id, login);
+    return await this.authenticationJwtService.verifyToken(
+      rt,
+      TokenTypeEnum.REFRESH_TOKEN
+    );
+  }
+
+  async refreshRt(rt: string): Promise<Tokens> {
+    const { id } = await this.verifyRt(rt);
+
+    const newTokens = await this.authenticationJwtService.getTokens(id);
     await this.authenticationJwtService.updateRtHash(
       id,
       newTokens.refresh_token
@@ -93,10 +100,21 @@ export class AuthService {
     return newTokens;
   }
 
+  async refreshAt(rt: string): Promise<Tokens> {
+    const { id } = await this.verifyRt(rt);
+
+    const newTokens = await this.authenticationJwtService.getTokens(id);
+
+    return {
+      access_token: newTokens.access_token,
+      refresh_token: rt
+    };
+  }
+
   async logout(tokens: Tokens) {
-    const { id } = await this.authenticationJwtService.decodeToken(
+    const { id } = await this.authenticationJwtService.verifyToken(
       tokens.access_token,
-      EToken.ACCESS_TOKEN
+      TokenTypeEnum.ACCESS_TOKEN
     );
 
     return await this.userRepository.update(

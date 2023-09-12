@@ -1,9 +1,16 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegistrationRequest } from './dto/reg-request';
 import { AuthRequest } from './dto/auth-request';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
-import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_REFRESH, AUTH_REG } from '../constants';
+import { catchError, lastValueFrom, of, tap } from 'rxjs';
+import {
+  AUTH_LOGIN,
+  AUTH_LOGOUT,
+  AUTH_REFRESH_RT,
+  AUTH_REFRESH_AT,
+  AUTH_REG,
+  AUTH_VALIDATE_AT
+} from '../constants';
 import { Tokens } from './interfaces';
 
 @Injectable()
@@ -23,10 +30,36 @@ export class AuthService {
   }
 
   async logout(tokens: Tokens) {
-    return this.authClient.emit(AUTH_LOGOUT, tokens);
+    return await this.authClient.send(AUTH_LOGOUT, tokens);
   }
 
-  async refresh(tokens: Tokens): Promise<Tokens> {
-    return await lastValueFrom(this.authClient.send(AUTH_REFRESH, tokens));
+  async validateAt(tokens: Tokens) {
+    return await lastValueFrom<boolean>(
+      this.authClient.send(AUTH_VALIDATE_AT, tokens).pipe(
+        tap((res) => {
+          return of(res.accessDenied);
+        }),
+        catchError(() => {
+          throw new UnauthorizedException();
+        })
+      )
+    );
+  }
+
+  async refreshRt(tokens: Tokens): Promise<Tokens> {
+    return await lastValueFrom(this.authClient.send(AUTH_REFRESH_RT, tokens));
+  }
+
+  async refreshAt(tokens: Tokens) {
+    return await lastValueFrom<Tokens>(
+      this.authClient.send(AUTH_REFRESH_AT, tokens).pipe(
+        tap(() => {
+          return of(true);
+        }),
+        catchError((err) => {
+          throw new UnauthorizedException(err);
+        })
+      )
+    );
   }
 }
