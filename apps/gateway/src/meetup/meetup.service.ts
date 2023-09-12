@@ -10,7 +10,6 @@ import {
 } from '../constants';
 import { Meetup } from 'apps/meetup/src/models';
 
-// TODO допсать возвращаемые типы
 @Injectable()
 export class MeetupService {
   constructor(@Inject('MEETUP') private meetupClient: ClientProxy) {}
@@ -22,17 +21,17 @@ export class MeetupService {
   }
 
   async addMeetup(createdMeetupDTO: CreateMeetupRequest) {
-    await lastValueFrom(
+    return await lastValueFrom(
       this.meetupClient.send(ADD_MEETUP, { createdMeetupDTO })
     );
   }
 
   async removeMeetupById(id: number) {
-    await lastValueFrom(this.meetupClient.send(REMOVE_MEETUP, { id }));
+    return await lastValueFrom(this.meetupClient.send(REMOVE_MEETUP, { id }));
   }
 
   async updateMeetup(updateMeetupRequest: CreateMeetupRequest, id) {
-    await lastValueFrom(
+    return await lastValueFrom(
       this.meetupClient.send(UPDATE_MEETUP, { updateMeetupRequest, id })
     );
   }

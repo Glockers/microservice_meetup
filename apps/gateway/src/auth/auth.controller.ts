@@ -17,10 +17,10 @@ import { JoiValidationPipe } from '../helpers';
 import { UseFilters } from '@nestjs/common';
 import { HttpExceptionFilter } from '../filters/controller.filter';
 import { Response } from 'express';
-import { AuthGuard } from '../guards/auth.guard';
 import { NAME_JWT_COOKIE } from '../constants/jwt';
 import { Tokens } from './interfaces';
 import { ExctractJwtFromCookie } from '../decorators';
+import { AuthGuard } from '../guards';
 
 @Controller('auth')
 @UseFilters(new HttpExceptionFilter())

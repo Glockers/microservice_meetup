@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateMeetupRequest } from './dto/create-meetup.request';
@@ -39,7 +39,9 @@ export class AppService {
       id: id
     });
     if (!selectedUser) {
-      throw new RpcException(new Error(`meetup with id ${id} not found`));
+      throw new RpcException(
+        new NotFoundException(`meetup with id ${id} not found`)
+      );
     }
     return selectedUser;
   }

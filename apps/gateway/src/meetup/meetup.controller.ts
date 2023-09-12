@@ -3,11 +3,12 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  UseFilters,
   UsePipes
 } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
@@ -17,8 +18,13 @@ import {
   updateMeetupRequestSchema
 } from './schemas';
 import { JoiValidationPipe } from '../helpers';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../guards';
+import { HttpExceptionFilter } from '../filters/controller.filter';
 
 @Controller('meetup')
+@UseGuards(AuthGuard)
+@UseFilters(new HttpExceptionFilter())
 export class MeetupController {
   constructor(private readonly meetupService: MeetupService) {}
 
@@ -30,16 +36,22 @@ export class MeetupController {
   @Post('/add')
   @UsePipes(new JoiValidationPipe(createMeetupRequestSchema))
   async addMeetup(@Body() createdMeetupDTO: CreateMeetupRequest) {
-    try {
-      return await this.meetupService.addMeetup(createdMeetupDTO);
-    } catch (err) {
-      throw new HttpException(err, err.code);
-    }
+    await this.meetupService.addMeetup(createdMeetupDTO);
+
+    return {
+      status: HttpStatus.OK,
+      text: 'Meetup add'
+    };
   }
 
   @Delete('/remove/:id')
   async removeMeetupById(@Param('id', ParseIntPipe) id: number) {
-    return await this.meetupService.removeMeetupById(id);
+    await this.meetupService.removeMeetupById(id);
+
+    return {
+      status: HttpStatus.OK,
+      text: 'Meetup was deleted'
+    };
   }
 
   @Patch('/update/:id')
@@ -48,6 +60,11 @@ export class MeetupController {
     updateMeetupRequest: CreateMeetupRequest,
     @Param('id', ParseIntPipe) id: number
   ) {
-    return await this.meetupService.updateMeetup(updateMeetupRequest, id);
+    await this.meetupService.updateMeetup(updateMeetupRequest, id);
+
+    return {
+      status: HttpStatus.OK,
+      text: 'Meetup was updated'
+    };
   }
 }

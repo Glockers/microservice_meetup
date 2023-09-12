@@ -19,7 +19,7 @@ export class AppController {
   @EventPattern(ADD_MEETUP)
   async addMeetup(@Payload('createdMeetupDTO') data: CreateMeetupRequest) {
     await this.appService.addMeetup(data);
-    return { success: true };
+    return { result: true };
   }
 
   @EventPattern(ALL_MEETUPS)
@@ -33,7 +33,7 @@ export class AppController {
   @EventPattern(REMOVE_MEETUP)
   async removeMeetupById(@Payload('id') id: number) {
     this.appService.removeMeetupById(id);
-    return { success: true };
+    return { result: true };
   }
 
   @EventPattern(UPDATE_MEETUP)
@@ -42,6 +42,6 @@ export class AppController {
     @Payload('id') id: number
   ) {
     await this.appService.updateMeetup(updateMeetupRequest, id);
-    return { success: true };
+    return { result: true };
   }
 }
