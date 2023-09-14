@@ -1,11 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { GatewayModule } from './gateway.module';
+import { ConfigService } from '@nestjs/config';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(GatewayModule);
+  app.use(cookieParser());
+  const configService = app.get(ConfigService);
   app.setGlobalPrefix('api');
-  app.enableCors();
-  console.log('Gateway service started!');
-  await app.listen(3000);
+  await app.listen(configService.get('PORT'));
 }
 bootstrap();

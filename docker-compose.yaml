@@ -1,0 +1,55 @@
+version: '3.9'
+services:
+  # gateways:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/gateway/Dockerfile
+  #     target: development
+  #   command: npm run start:dev
+  #   env_file:
+  #     - ./apps/gateway/.env
+  #   depends_on:
+  #     - rabbitmq
+  #     - auth
+  #     - meetup
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   ports:
+  #     - '3000:3000'
+  # meetup:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/meetup/Dockerfile
+  #     target: development
+  #   command: npm run start:dev meetup
+  #   env_file:
+  #     - ./apps/meetup/.env
+  #   depends_on:
+  #     - rabbitmq
+  #     - auth
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   ports:
+  #     - '3000:3000'
+  # auth:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/auth/Dockerfile
+  #     target: development
+  #   command: npm run start:dev auth
+  #   env_file:
+  #     - ./apps/auth/.env
+  #   depends_on:
+  #     - rabbitmq
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   ports:
+  #     - '3000:3000'
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - '5672:5672'
+ 

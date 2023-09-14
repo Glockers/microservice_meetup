@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
-import { GatewayController } from './gateway.controller';
-import { GatewayService } from './gateway.service';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule } from '@app/common';
+import { mergedConfigValidationSchema } from './config';
+import { MeetupMicroserviceModule } from './microservices/meetup';
+import { AuthModule } from './microservices/auth';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      validationSchema: mergedConfigValidationSchema,
       envFilePath: './apps/gateway/.env'
     }),
-    DatabaseModule
-  ],
-  controllers: [GatewayController],
-  providers: [GatewayService]
+    AuthModule,
+    MeetupMicroserviceModule
+  ]
 })
 export class GatewayModule {}
