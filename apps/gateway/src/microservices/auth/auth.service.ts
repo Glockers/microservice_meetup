@@ -3,15 +3,17 @@ import { RegistrationRequest } from './dto/reg-request';
 import { AuthRequest } from './dto/auth-request';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, lastValueFrom, of, tap } from 'rxjs';
+import { Tokens } from './interfaces';
 import {
+  AUTH_DECODE_AT,
   AUTH_LOGIN,
   AUTH_LOGOUT,
-  AUTH_REFRESH_RT,
   AUTH_REFRESH_AT,
+  AUTH_REFRESH_RT,
   AUTH_REG,
   AUTH_VALIDATE_AT
-} from '../constants';
-import { Tokens } from './interfaces';
+} from '../../constants';
+import { TokenPayload } from '../../types';
 
 @Injectable()
 export class AuthService {
@@ -56,6 +58,16 @@ export class AuthService {
         tap(() => {
           return of(true);
         }),
+        catchError((err) => {
+          throw new UnauthorizedException(err);
+        })
+      )
+    );
+  }
+
+  async decodeAt(at: string): Promise<TokenPayload> {
+    return await lastValueFrom<TokenPayload>(
+      this.authClient.send(AUTH_DECODE_AT, { at }).pipe(
         catchError((err) => {
           throw new UnauthorizedException(err);
         })

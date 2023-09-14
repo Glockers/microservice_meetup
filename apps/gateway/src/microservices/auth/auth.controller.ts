@@ -13,14 +13,14 @@ import { RegistrationRequest } from './dto/reg-request';
 import { registrationRequestSchema } from './schemas/reg.schema';
 import { authRequestSchema } from './schemas/auth.schema';
 import { AuthRequest } from './dto/auth-request';
-import { JoiValidationPipe } from '../helpers';
 import { UseFilters } from '@nestjs/common';
-import { HttpExceptionFilter } from '../filters/controller.filter';
 import { Response } from 'express';
-import { NAME_JWT_COOKIE } from '../constants/jwt';
 import { Tokens } from './interfaces';
-import { ExctractJwtFromCookie } from '../decorators';
-import { AuthGuard } from '../guards';
+import { HttpExceptionFilter } from '../../filters/controller.filter';
+import { JoiValidationPipe } from '../../helpers';
+import { NAME_JWT_COOKIE } from '../../constants';
+import { AuthGuard } from '../../guards';
+import { ExctractJwtFromCookie } from '../../decorators';
 
 @Controller('auth')
 @UseFilters(new HttpExceptionFilter())

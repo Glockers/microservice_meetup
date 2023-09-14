@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateMeetupRequest } from './dto/create-meetup.request';
+import { CreateMeetupRequest } from '../dto/create-meetup.request';
 import { RpcException } from '@nestjs/microservices';
-import { Meetup, Tags } from './models';
+import { Meetup, Tags } from '../models';
 
 @Injectable()
-export class AppService {
+export class MeetupService {
   constructor(
     @InjectRepository(Meetup)
     private meetupRepository: Repository<Meetup>,

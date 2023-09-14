@@ -1,20 +1,20 @@
 import { Controller, UseFilters } from '@nestjs/common';
-import { AppService } from './app.service';
+import { MeetupService } from './meetup.service';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { RpcFilter } from '@app/common';
-import { CreateMeetupRequest } from './dto/create-meetup.request';
+import { CreateMeetupRequest } from '../dto/create-meetup.request';
 import {
   ADD_MEETUP,
   ALL_MEETUPS,
   REMOVE_MEETUP,
   UPDATE_MEETUP
-} from './constants/meetup-endpoints';
-import { Meetup } from './models';
+} from '../constants/meetup-endpoints';
+import { Meetup } from '../models';
 
 @Controller()
 @UseFilters(new RpcFilter())
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+export class MeetupController {
+  constructor(private readonly appService: MeetupService) {}
 
   @EventPattern(ADD_MEETUP)
   async addMeetup(@Payload('createdMeetupDTO') data: CreateMeetupRequest) {

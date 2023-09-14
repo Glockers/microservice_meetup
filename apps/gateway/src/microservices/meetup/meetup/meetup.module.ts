@@ -1,16 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
 import { MeetupController } from './meetup.controller';
-import { RmqModule } from '@app/common';
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from '../../auth';
+import { RabbitmqModule } from '../rabbitmq.module';
 
 @Module({
-  imports: [
-    AuthModule,
-    RmqModule.register({
-      name: 'MEETUP'
-    })
-  ],
+  imports: [AuthModule, RabbitmqModule],
   providers: [MeetupService],
   controllers: [MeetupController]
 })

@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { CreateMeetupRequest } from './dto/create-meetup.request';
-import { lastValueFrom } from 'rxjs';
 import {
   ADD_MEETUP,
   ALL_MEETUPS,
   REMOVE_MEETUP,
   UPDATE_MEETUP
-} from '../constants';
+} from './../../../../../meetup/src/constants/meetup-endpoints';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 import { Meetup } from 'apps/meetup/src/models';
+import { CreateMeetupRequest } from '../dto/create-meetup.request';
 
 @Injectable()
 export class MeetupService {

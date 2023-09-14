@@ -5,9 +5,9 @@ import {
   Injectable
 } from '@nestjs/common';
 import { Tokens } from '../types';
-import { AuthService } from '../auth/auth.service';
 import { Request } from 'express';
 import { NAME_JWT_COOKIE } from '../constants/jwt';
+import { AuthService } from '../microservices/auth/auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

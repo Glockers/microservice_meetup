@@ -12,15 +12,15 @@ import {
   UsePipes
 } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
-import { CreateMeetupRequest } from './dto/create-meetup.request';
+import { CreateMeetupRequest } from '../dto/create-meetup.request';
 import {
   createMeetupRequestSchema,
   updateMeetupRequestSchema
-} from './schemas';
-import { JoiValidationPipe } from '../helpers';
+} from '../schemas';
+import { JoiValidationPipe } from '../../../helpers';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../guards';
-import { HttpExceptionFilter } from '../filters/controller.filter';
+import { AuthGuard } from '../../../guards';
+import { HttpExceptionFilter } from '../../../filters/controller.filter';
 
 @Controller('meetup')
 @UseGuards(AuthGuard)
@@ -37,8 +37,6 @@ export class MeetupController {
   @UsePipes(new JoiValidationPipe(createMeetupRequestSchema))
   async addMeetup(@Body() createdMeetupDTO: CreateMeetupRequest) {
     await this.meetupService.addMeetup(createdMeetupDTO);
-    console.log(createdMeetupDTO);
-
     return {
       status: HttpStatus.OK,
       text: 'Meetup add'

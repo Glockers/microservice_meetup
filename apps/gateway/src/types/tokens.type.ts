@@ -7,3 +7,7 @@ export enum EToken {
   ACCESS_TOKEN,
   REFRESH_TOKEN
 }
+
+export type TokenPayload = {
+  id: number;
+};

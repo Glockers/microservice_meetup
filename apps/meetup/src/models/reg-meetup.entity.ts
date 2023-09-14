@@ -2,8 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
+import { Meetup } from './meetup.entity';
 
 @Entity('meetup_registration')
 export class MeetupRegistration {
@@ -13,8 +16,9 @@ export class MeetupRegistration {
   @Column()
   userID: number;
 
-  @Column()
-  title: string;
+  @ManyToOne(() => Meetup, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'meetup_id' })
+  meetup: Meetup;
 
   @CreateDateColumn({ name: 'registration_data' })
   registrationDate!: Date;

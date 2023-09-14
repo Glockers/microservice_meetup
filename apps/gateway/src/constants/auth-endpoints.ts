@@ -4,3 +4,4 @@ export const AUTH_LOGOUT = 'auth/logout';
 export const AUTH_REFRESH_RT = 'auth/refresh-rt';
 export const AUTH_VALIDATE_AT = 'auth/validate-at';
 export const AUTH_REFRESH_AT = 'auth/refresh-at';
+export const AUTH_DECODE_AT = 'auth/decode-at';

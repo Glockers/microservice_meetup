@@ -1,6 +1,6 @@
 import { ExecutionContext, createParamDecorator } from '@nestjs/common';
 import { Request } from 'express';
-import { Tokens } from '../auth/interfaces';
+import { Tokens } from '../types';
 
 export const ExctractJwtFromCookie = createParamDecorator(
   (data: string, context: ExecutionContext): Tokens | null => {

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
-import { MeetupModule } from './meetup/meetup.module';
 import { mergedConfigValidationSchema } from './config';
+import { MeetupMicroserviceModule } from './microservices/meetup';
+import { AuthModule } from './microservices/auth';
 
 @Module({
   imports: [
@@ -12,7 +12,7 @@ import { mergedConfigValidationSchema } from './config';
       envFilePath: './apps/gateway/.env'
     }),
     AuthModule,
-    MeetupModule
+    MeetupMicroserviceModule
   ]
 })
 export class GatewayModule {}

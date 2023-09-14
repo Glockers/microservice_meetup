@@ -5,6 +5,7 @@ import { RpcFilter } from '@app/common';
 import { RegistrationRequest } from './dto/reg.request';
 import { AuthRequest } from './dto/auth.request';
 import {
+  AUTH_DECODE_AT,
   AUTH_LOGIN,
   AUTH_LOGOUT,
   AUTH_REFRESH_AT,
@@ -14,6 +15,7 @@ import {
 import { TokenTypeEnum, Tokens } from './types';
 import { AuthenticationJwtService } from './services/authentication-jwt.service';
 import { AUTH_VALIDATE_AT } from './constants';
+import { TokenPayload } from './types/payload.type';
 
 @Controller()
 @UseFilters(new RpcFilter())
@@ -57,5 +59,13 @@ export class AuthController {
   @EventPattern(AUTH_REFRESH_AT)
   async refreshAt(@Payload() tokens: Tokens): Promise<Tokens> {
     return await this.authService.refreshAt(tokens.refresh_token);
+  }
+
+  @EventPattern(AUTH_DECODE_AT)
+  async decodeAt(@Payload('at') token: string): Promise<TokenPayload> {
+    return await this.authenticationJwtService.verifyToken(
+      token,
+      TokenTypeEnum.ACCESS_TOKEN
+    );
   }
 }
