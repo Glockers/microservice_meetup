@@ -1,6 +1,27 @@
-import { Controller } from '@nestjs/common';
+import { HttpExceptionFilter } from './../../../filters/controller.filter';
+import {
+  Controller,
+  Get,
+  Header,
+  StreamableFile,
+  UseFilters
+} from '@nestjs/common';
+import { ReportService } from './report.service';
 
 @Controller('meetup/report')
+@UseFilters(new HttpExceptionFilter())
 export class ReportController {
-  constructor() {}
+  constructor(private reportService: ReportService) {}
+
+  @Get('/pdf')
+  @Header('Content-Type', 'application/pdf')
+  @Header('Content-Disposition', 'attachment; filename=test.pdf')
+  async getPdfReport() {
+    const pdfBytes = await this.reportService.getPdf();
+    return new StreamableFile(pdfBytes);
+  }
+  @Get('/csv')
+  async getCsvReport() {
+    return 1;
+  }
 }
