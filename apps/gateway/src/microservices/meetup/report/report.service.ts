@@ -1,7 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { REPORT_MEETUP_PDF } from '../../../constants/meetup-endpoints';
+import {
+  REPORT_MEETUP_CSV,
+  REPORT_MEETUP_PDF
+} from '../../../constants/meetup-endpoints';
 import { deserializeUint8Array } from '@app/common';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class ReportService {
@@ -12,5 +16,11 @@ export class ReportService {
       .send<string>(REPORT_MEETUP_PDF, {})
       .toPromise();
     return deserializeUint8Array(base64String);
+  }
+
+  async getCsv() {
+    return await lastValueFrom(
+      this.meetupClient.send<string>(REPORT_MEETUP_CSV, {})
+    );
   }
 }

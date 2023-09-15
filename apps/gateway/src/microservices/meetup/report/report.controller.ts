@@ -15,13 +15,15 @@ export class ReportController {
 
   @Get('/pdf')
   @Header('Content-Type', 'application/pdf')
-  @Header('Content-Disposition', 'attachment; filename=test.pdf')
+  @Header('Content-Disposition', 'attachment; filename=meetups.pdf')
   async getPdfReport() {
     const pdfBytes = await this.reportService.getPdf();
     return new StreamableFile(pdfBytes);
   }
   @Get('/csv')
+  @Header('Content-Type', 'text/csv')
+  @Header('Content-Disposition', 'attachment; filename=meetups.csv')
   async getCsvReport() {
-    return 1;
+    return await this.reportService.getCsv();
   }
 }

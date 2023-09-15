@@ -3,6 +3,7 @@ import { PDFDocument, rgb } from 'pdf-lib';
 import { MeetupService } from '../meetup/meetup.service';
 import { serializeUint8Array } from '@app/common';
 import fontkit from '@pdf-lib/fontkit';
+import { unparse } from 'papaparse';
 
 @Injectable()
 export class ReportService {
@@ -48,7 +49,13 @@ export class ReportService {
     return serializeUint8Array(pdfBytes);
   }
 
-  async getCsvMeetups() {}
+  async getCsvMeetups() {
+    const meetups = await this.meetupService.getAllMeetups();
+    return unparse({
+      fields: ['Список митапов'],
+      data: meetups.map((meetup) => [meetup.title])
+    });
+  }
 
   async loadFonts(pdfDoc: PDFDocument) {
     const fontsBytes = await fetch(
