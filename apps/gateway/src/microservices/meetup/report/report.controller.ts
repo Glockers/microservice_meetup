@@ -26,4 +26,9 @@ export class ReportController {
   async getCsvReport() {
     return await this.reportService.getCsv();
   }
+
+  @Get('/test')
+  async test() {
+    return true;
+  }
 }

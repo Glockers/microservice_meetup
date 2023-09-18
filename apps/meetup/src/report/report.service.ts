@@ -1,9 +1,10 @@
+import * as fontkit from '@pdf-lib/fontkit';
 import { Injectable } from '@nestjs/common';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { MeetupService } from '../meetup/meetup.service';
 import { serializeUint8Array } from '@app/common';
-import fontkit from '@pdf-lib/fontkit';
 import { unparse } from 'papaparse';
+import { RU_URL_FONT } from '../constants/ru-font';
 
 @Injectable()
 export class ReportService {
@@ -58,10 +59,9 @@ export class ReportService {
   }
 
   async loadFonts(pdfDoc: PDFDocument) {
-    const fontsBytes = await fetch(
-      'https://db.onlinewebfonts.com/t/643e59524d730ce6c6f2384eebf945f8.ttf'
-    ).then((res) => res.arrayBuffer());
-
+    const fontsBytes = await fetch(RU_URL_FONT).then((res) =>
+      res.arrayBuffer()
+    );
     pdfDoc.registerFontkit(fontkit);
     await pdfDoc.embedFont(fontsBytes);
     return await pdfDoc.embedFont(fontsBytes);
