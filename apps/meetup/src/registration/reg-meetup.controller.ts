@@ -20,7 +20,7 @@ export class RegMeetupController {
   }
 
   @EventPattern(MY_REG_MEETUPS)
-  async getMyMeetups(@Payload('userID') userID: any) {
+  async getMyMeetups(@Payload('userID') userID: number) {
     return await this.regMeetupService.getAllMyRegMeetups(userID); // TODO поменять
   }
 }
