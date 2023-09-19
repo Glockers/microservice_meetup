@@ -4,17 +4,19 @@ import { Repository } from 'typeorm';
 import { CreateMeetupRequest } from '../dto/create-meetup.request';
 import { RpcException } from '@nestjs/microservices';
 import { Meetup, Tags } from '../models';
+import { SearchService } from '../search/search.service';
 
 @Injectable()
 export class MeetupService {
   constructor(
+    private searchService: SearchService,
     @InjectRepository(Meetup)
     private meetupRepository: Repository<Meetup>,
     @InjectRepository(Tags)
     private meetupTagsRepository: Repository<Tags>
   ) {}
 
-  async addMeetup(data: CreateMeetupRequest): Promise<void> {
+  async addMeetup(data: CreateMeetupRequest): Promise<Meetup> {
     const filteredData = {
       ...data,
       tags: undefined
@@ -27,6 +29,10 @@ export class MeetupService {
         name: element
       });
     });
+
+    this.searchService.indexMeetup(meetup);
+
+    return meetup;
   }
 
   async getAllMeetups(): Promise<Meetup[]> {
@@ -40,12 +46,11 @@ export class MeetupService {
   async removeMeetupById(id: number) {
     const selectedMeetup = await this.findById(id);
     await this.meetupRepository.delete(selectedMeetup);
+    this.searchService.delete(7);
+    return selectedMeetup;
   }
 
-  async updateMeetup(
-    updateMeetupRequest: CreateMeetupRequest,
-    id: number
-  ): Promise<void> {
+  async updateMeetup(updateMeetupRequest: CreateMeetupRequest, id: number) {
     const meetup = await this.findById(id);
     if (updateMeetupRequest.tags && updateMeetupRequest.tags.length !== 0) {
       await this.clearTags(meetup.id);
@@ -56,9 +61,10 @@ export class MeetupService {
         });
       });
     }
-
     Object.assign(meetup, updateMeetupRequest);
     await this.meetupRepository.save(meetup);
+    this.searchService.update(meetup);
+    return meetup;
   }
 
   async findById(id: number): Promise<Meetup> {

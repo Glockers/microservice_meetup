@@ -5,6 +5,7 @@ import { mergedConfigValidationSchema } from './schemas/main';
 import { MeetupModule } from './meetup/meetup.module';
 import { RegMeetupModule } from './registration/reg-meetup.module';
 import { ReportModule } from './report/report.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ReportModule } from './report/report.module';
     RegMeetupModule,
     ReportModule,
     RmqModule,
+    SearchModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: mergedConfigValidationSchema,

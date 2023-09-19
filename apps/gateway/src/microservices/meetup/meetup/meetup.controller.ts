@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseFilters,
   UsePipes
 } from '@nestjs/common';
@@ -64,6 +65,15 @@ export class MeetupController {
     return {
       status: HttpStatus.OK,
       text: 'Meetup was updated'
+    };
+  }
+
+  @Get('/search')
+  async search(@Query('text') text: string) {
+    const meetups = await this.meetupService.searchMeetup(text);
+    return {
+      status: HttpStatus.OK,
+      meetups
     };
   }
 }

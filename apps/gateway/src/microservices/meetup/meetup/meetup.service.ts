@@ -1,14 +1,15 @@
-import {
-  ADD_MEETUP,
-  ALL_MEETUPS,
-  REMOVE_MEETUP,
-  UPDATE_MEETUP
-} from './../../../../../meetup/src/constants/meetup-endpoints';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { Meetup } from 'apps/meetup/src/models';
 import { CreateMeetupRequest } from '../dto/create-meetup.request';
+import {
+  ADD_MEETUP,
+  ALL_MEETUPS,
+  REMOVE_MEETUP,
+  SMART_SEARCH_MEETUP,
+  UPDATE_MEETUP
+} from 'apps/gateway/src/constants';
 
 @Injectable()
 export class MeetupService {
@@ -33,6 +34,12 @@ export class MeetupService {
   async updateMeetup(updateMeetupRequest: CreateMeetupRequest, id) {
     return await lastValueFrom(
       this.meetupClient.send(UPDATE_MEETUP, { updateMeetupRequest, id })
+    );
+  }
+
+  async searchMeetup(text: string) {
+    return await lastValueFrom(
+      this.meetupClient.send(SMART_SEARCH_MEETUP, { text })
     );
   }
 }
