@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseFilters,
   UsePipes
 } from '@nestjs/common';
@@ -21,6 +22,7 @@ import { JoiValidationPipe } from '../../../helpers';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../../guards';
 import { HttpExceptionFilter } from '../../../filters/controller.filter';
+import { LocationMeetupRequest } from '../dto/location-meetup.request';
 
 @Controller('meetup')
 @UseGuards(AuthGuard)
@@ -29,8 +31,8 @@ export class MeetupController {
   constructor(private readonly meetupService: MeetupService) {}
 
   @Get('/')
-  async getAllMeetups() {
-    return await this.meetupService.getAllMeetups();
+  async getAllMeetups(@Query() params: LocationMeetupRequest) {
+    return await this.meetupService.getAllMeetups(params);
   }
 
   @Post('/add')
@@ -64,6 +66,15 @@ export class MeetupController {
     return {
       status: HttpStatus.OK,
       text: 'Meetup was updated'
+    };
+  }
+
+  @Get('/search')
+  async search(@Query('text') text: string) {
+    const meetups = await this.meetupService.searchMeetup(text);
+    return {
+      status: HttpStatus.OK,
+      meetups
     };
   }
 }

@@ -1,7 +1,9 @@
+import { Point } from 'geojson';
 import { Tags } from './tag-meetup.entity';
 import {
   Column,
   Entity,
+  Index,
   JoinTable,
   OneToMany,
   PrimaryGeneratedColumn
@@ -24,13 +26,16 @@ export class Meetup {
   @Column({ type: 'timestamp' })
   dateEnd: Date;
 
-  @Column({ type: 'decimal', precision: 10, scale: 7, nullable: true })
-  latitude: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 7, nullable: true })
-  longitude: number;
-
   @OneToMany(() => Tags, (tags) => tags.meetup)
   @JoinTable()
   tags: Tags[];
+
+  @Index({ spatial: true })
+  @Column({
+    type: 'geography',
+    spatialFeatureType: 'Point',
+    srid: 4326,
+    nullable: true
+  })
+  location: Point;
 }
