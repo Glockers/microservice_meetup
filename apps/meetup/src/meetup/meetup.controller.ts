@@ -10,6 +10,7 @@ import {
   UPDATE_MEETUP
 } from '../constants/meetup-endpoints';
 import { Meetup } from '../models';
+import { Cordinates } from '../dto/location-meetup.request';
 
 @Controller()
 @UseFilters(new RpcFilter())
@@ -23,10 +24,15 @@ export class MeetupController {
   }
 
   @EventPattern(ALL_MEETUPS)
-  async getAllMeetups(): Promise<{
+  async getAllMeetups(@Payload('params') location: Cordinates): Promise<{
     meetups: Meetup[];
   }> {
-    const meetups = await this.appService.getAllMeetups();
+    let meetups;
+    if (location.lat && location.long) {
+      meetups = await this.appService.getRange(location);
+    } else {
+      meetups = await this.appService.getAllMeetups();
+    }
     return { meetups };
   }
 

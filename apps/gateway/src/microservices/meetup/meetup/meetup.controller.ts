@@ -22,6 +22,7 @@ import { JoiValidationPipe } from '../../../helpers';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../../guards';
 import { HttpExceptionFilter } from '../../../filters/controller.filter';
+import { LocationMeetupRequest } from '../dto/location-meetup.request';
 
 @Controller('meetup')
 @UseGuards(AuthGuard)
@@ -30,8 +31,8 @@ export class MeetupController {
   constructor(private readonly meetupService: MeetupService) {}
 
   @Get('/')
-  async getAllMeetups() {
-    return await this.meetupService.getAllMeetups();
+  async getAllMeetups(@Query() params: LocationMeetupRequest) {
+    return await this.meetupService.getAllMeetups(params);
   }
 
   @Post('/add')

@@ -5,6 +5,8 @@ import { CreateMeetupRequest } from '../dto/create-meetup.request';
 import { RpcException } from '@nestjs/microservices';
 import { Meetup, Tags } from '../models';
 import { SearchService } from '../search/search.service';
+import { Point } from 'geojson';
+import { Cordinates } from '../dto/location-meetup.request';
 
 @Injectable()
 export class MeetupService {
@@ -17,10 +19,16 @@ export class MeetupService {
   ) {}
 
   async addMeetup(data: CreateMeetupRequest): Promise<Meetup> {
+    const pointObject: Point = {
+      type: 'Point',
+      coordinates: [data.lat, data.long]
+    };
+
     const filteredData = {
       ...data,
-      tags: undefined
-    } as Meetup;
+      tags: undefined,
+      location: pointObject
+    };
     const meetup = await this.meetupRepository.save(filteredData);
     const { tags } = data;
     tags.forEach(async (element) => {
@@ -31,7 +39,6 @@ export class MeetupService {
     });
 
     this.searchService.indexMeetup(meetup);
-
     return meetup;
   }
 
@@ -43,10 +50,42 @@ export class MeetupService {
     });
   }
 
+  async getRange(location: Cordinates) {
+    const origin: Point = {
+      type: 'Point',
+      coordinates: [location.long, location.lat]
+    };
+
+    const locations = await this.meetupRepository
+      .createQueryBuilder('t_test_location')
+      .select([
+        '*',
+        'ST_Distance(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)))/1000 AS distance'
+      ])
+      .where(
+        'ST_DWithin(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)) ,:range)'
+      )
+      .orderBy('distance', 'ASC')
+      .setParameters({
+        origin: JSON.stringify(origin),
+        range: 100 * 1000
+      })
+      .getRawMany();
+    return locations;
+  }
+
+  async getFilteredMeetups(): Promise<Meetup[]> {
+    return await this.meetupRepository.find({
+      relations: {
+        tags: true
+      }
+    });
+  }
+
   async removeMeetupById(id: number) {
     const selectedMeetup = await this.findById(id);
-    await this.meetupRepository.delete(selectedMeetup);
-    this.searchService.delete(7);
+    await this.meetupRepository.delete(selectedMeetup.id);
+    this.searchService.delete(selectedMeetup.id);
     return selectedMeetup;
   }
 
@@ -87,6 +126,8 @@ export class MeetupService {
         }
       }
     });
-    records.forEach(async (tag) => await this.meetupTagsRepository.delete(tag));
+    records.forEach(
+      async (tag) => await this.meetupTagsRepository.delete(tag.id)
+    );
   }
 }

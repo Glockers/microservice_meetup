@@ -10,14 +10,15 @@ import {
   SMART_SEARCH_MEETUP,
   UPDATE_MEETUP
 } from 'apps/gateway/src/constants';
+import { LocationMeetupRequest } from '../dto/location-meetup.request';
 
 @Injectable()
 export class MeetupService {
   constructor(@Inject('MEETUP') private meetupClient: ClientProxy) {}
 
-  async getAllMeetups() {
+  async getAllMeetups(params: LocationMeetupRequest) {
     return await lastValueFrom(
-      this.meetupClient.send<Meetup[]>(ALL_MEETUPS, {})
+      this.meetupClient.send<Meetup[]>(ALL_MEETUPS, { params })
     );
   }
 

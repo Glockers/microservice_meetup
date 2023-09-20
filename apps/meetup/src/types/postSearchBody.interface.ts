@@ -1,15 +1,10 @@
-export interface MeetupSearchBody {
-  id: number;
-  title: string;
-  content: string;
-  authorId: number;
-}
+import { Meetup } from '../models';
 
 export interface MeetupSearchResult {
   hits: {
     total: number;
     hits: Array<{
-      _source: MeetupSearchBody;
+      _source: Meetup;
     }>;
   };
 }

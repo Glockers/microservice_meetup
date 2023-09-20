@@ -7,9 +7,9 @@ export class CreateMeetupRequest {
 
   dateEnd: Date;
 
-  latitude: number;
+  lat: number;
 
-  longitude: number;
+  long: number;
 
   tags: string[];
 }

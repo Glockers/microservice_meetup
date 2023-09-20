@@ -24,8 +24,7 @@ export class SearchService {
         description: meetup.description,
         dateStart: meetup.dateStart,
         dateEnd: meetup.dateEnd,
-        latitude: meetup.latitude,
-        longitude: meetup.longitude,
+        location: meetup.location,
         tags: meetup.tags
       }
     });
