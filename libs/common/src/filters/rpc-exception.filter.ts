@@ -7,10 +7,6 @@ export class RpcFilter implements RpcExceptionFilter {
   catch(error: unknown): Observable<never> {
     new Logger().error(error, 'Microservice');
 
-    // const context = host.switchToRpc().getContext<RmqContext>();
-    // const channel = context.getChannelRef();
-    // channel.ack(context.getMessage());
-
     if (error instanceof RpcException) {
       return throwError(() => error.getError());
     }
