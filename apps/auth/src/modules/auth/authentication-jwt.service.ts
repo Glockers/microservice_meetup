@@ -1,14 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../models';
+import { User } from '../../models';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { TokenTypeEnum, Tokens } from '../types';
+import { TokenTypeEnum, Tokens } from '../../types';
 import { RpcException } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
-import { TokenPayload } from '../types/payload.type';
-import { AT_EXPIRES, RT_EXPIRES } from '../constants';
+import { TokenPayload } from '../../types/payload.type';
+import { AT_EXPIRES, RT_EXPIRES } from '../../constants';
 
 @Injectable()
 export class AuthenticationJwtService {

@@ -5,15 +5,15 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Not, Repository } from 'typeorm';
-import { AuthRequest } from '../dto/auth.request';
-import { RegistrationRequest } from '../dto/reg.request';
+import { AuthRequest } from '../../dto/auth.request';
+import { RegistrationRequest } from '../../dto/reg.request';
 import { RpcException } from '@nestjs/microservices';
-import { USER_ALREADY_REG, ACCESS_DENIED } from '../constants';
-import { User } from '../models';
+import { USER_ALREADY_REG, ACCESS_DENIED } from '../../constants';
+import { User } from '../../models';
 import * as bcrypt from 'bcrypt';
-import { TokenTypeEnum, Tokens } from '../types';
+import { TokenTypeEnum, Tokens } from '../../types';
 import { AuthenticationJwtService } from './authentication-jwt.service';
-import { TokenPayload } from '../types/payload.type';
+import { TokenPayload } from '../../types/payload.type';
 
 @Injectable()
 export class AuthService {

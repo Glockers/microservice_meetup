@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
-import { AuthService } from './services/auth.service';
-import { DatabaseModule, RmqModule } from '@app/common';
+import { RmqModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
-import { mergedConfigValidationSchema } from './schemas/main';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './models';
+import { mergedConfigValidationSchema } from '../../schemas/main';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthenticationJwtService } from './services/authentication-jwt.service';
+import { FirabaseModule } from '../firebase/firebase.module';
+import { AuthService } from './auth.service';
+import { AuthenticationJwtService } from './authentication-jwt.service';
+import { AuthDatabaseModule } from '../../db/db.module';
 
 @Module({
   imports: [
@@ -17,8 +17,8 @@ import { AuthenticationJwtService } from './services/authentication-jwt.service'
       validationSchema: mergedConfigValidationSchema,
       envFilePath: './apps/auth/.env'
     }),
-    DatabaseModule.addEntities([User]),
-    TypeOrmModule.forFeature([User]),
+    FirabaseModule,
+    AuthDatabaseModule,
     JwtModule.register({})
   ],
   controllers: [AuthController],
