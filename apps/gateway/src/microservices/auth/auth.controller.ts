@@ -5,7 +5,9 @@ import {
   HttpStatus,
   Post,
   Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
   UsePipes
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -14,13 +16,14 @@ import { registrationRequestSchema } from './schemas/reg.schema';
 import { authRequestSchema } from './schemas/auth.schema';
 import { AuthRequest } from './dto/auth-request';
 import { UseFilters } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Express } from 'express';
 import { Tokens } from './interfaces';
 import { HttpExceptionFilter } from '../../filters/controller.filter';
 import { JoiValidationPipe } from '../../helpers';
 import { NAME_JWT_COOKIE } from '../../constants';
 import { AuthGuard } from '../../guards';
 import { ExctractJwtFromCookie } from '../../decorators';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('auth')
 @UseFilters(new HttpExceptionFilter())
@@ -91,5 +94,15 @@ export class AuthController {
     response
       .cookie(NAME_JWT_COOKIE, newTokens, { httpOnly: true })
       .sendStatus(HttpStatus.NO_CONTENT);
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  public async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @ExctractJwtFromCookie(NAME_JWT_COOKIE) tokens: Tokens | null
+  ) {
+    const { id: userID } = await this.authService.decodeAt(tokens.access_token);
+    await this.authService.loadAvatar(userID, file);
   }
 }

@@ -1,21 +1,20 @@
 import { Controller, UseFilters } from '@nestjs/common';
-import { AuthService } from './services/auth.service';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { RpcFilter } from '@app/common';
-import { RegistrationRequest } from './dto/reg.request';
-import { AuthRequest } from './dto/auth.request';
 import {
   AUTH_DECODE_AT,
   AUTH_LOGIN,
   AUTH_LOGOUT,
   AUTH_REFRESH_AT,
   AUTH_REFRESH_RT,
-  AUTH_REG
-} from './constants';
-import { TokenTypeEnum, Tokens } from './types';
-import { AuthenticationJwtService } from './services/authentication-jwt.service';
-import { AUTH_VALIDATE_AT } from './constants';
-import { TokenPayload } from './types/payload.type';
+  AUTH_REG,
+  AUTH_VALIDATE_AT
+} from '../../constants';
+import { AuthService } from './auth.service';
+import { AuthenticationJwtService } from './authentication-jwt.service';
+import { AuthRequest, RegistrationRequest } from '../../dto';
+import { TokenTypeEnum, Tokens } from '../../types';
+import { TokenPayload } from '../../types/payload.type';
 
 @Controller()
 @UseFilters(new RpcFilter())

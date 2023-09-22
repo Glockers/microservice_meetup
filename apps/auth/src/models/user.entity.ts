@@ -11,7 +11,7 @@ export class User {
   @Column({ type: 'varchar' })
   public password!: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   public avatar!: string;
 
   @Column({ type: 'varchar', nullable: true })

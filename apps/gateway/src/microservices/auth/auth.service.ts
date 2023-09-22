@@ -11,7 +11,8 @@ import {
   AUTH_REFRESH_AT,
   AUTH_REFRESH_RT,
   AUTH_REG,
-  AUTH_VALIDATE_AT
+  AUTH_VALIDATE_AT,
+  USER_LOAD_FILE
 } from '../../constants';
 import { TokenPayload } from '../../types';
 
@@ -72,6 +73,12 @@ export class AuthService {
           throw new UnauthorizedException(err);
         })
       )
+    );
+  }
+
+  async loadAvatar(userID: number, file: Express.Multer.File) {
+    return await lastValueFrom(
+      this.authClient.send(USER_LOAD_FILE, { userID, file })
     );
   }
 }

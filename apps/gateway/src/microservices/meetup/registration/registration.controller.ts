@@ -30,8 +30,8 @@ export class RegController {
     @Param('id', ParseIntPipe) meetupID: number,
     @ExctractJwtFromCookie(NAME_JWT_COOKIE) tokens: Tokens | null
   ) {
-    const tokenPayload = await this.authService.decodeAt(tokens.access_token);
-    await this.regService.regOnMeetup(tokenPayload.id, meetupID);
+    const { id: userID } = await this.authService.decodeAt(tokens.access_token);
+    await this.regService.regOnMeetup(userID, meetupID);
 
     return {
       status: HttpStatus.OK,
