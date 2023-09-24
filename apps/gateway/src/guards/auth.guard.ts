@@ -7,7 +7,7 @@ import {
 import { Tokens } from '../types';
 import { Request } from 'express';
 import { NAME_JWT_COOKIE } from '../constants/jwt';
-import { AuthService } from '../microservices/auth/auth.service';
+import { AuthService } from '../modules/auth/auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
