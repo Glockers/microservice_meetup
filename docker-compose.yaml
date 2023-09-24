@@ -1,6 +1,5 @@
 version: '3.9'
 
-
 services:
   rabbitmq: 
     image: rabbitmq
@@ -15,7 +14,6 @@ services:
     depends_on:
       - rabbitmq
       - auth
-      - meetup
     ports:
       - '3000:3000'
   auth:
@@ -27,20 +25,16 @@ services:
     depends_on:
       - pg_auth
       - rabbitmq
-    ports:
-      - '3001:3000'
-  meetup:
-    build:
-      context: .
-      dockerfile: ./apps/meetup/Dockerfile
-    env_file:
-      - ./apps/meetup/.env
-    links:
-      - pg_meetup
-    depends_on:
-      - rabbitmq
-    ports:
-      - '3002:3000'
+  # meetup:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/meetup/Dockerfile
+  #   env_file:
+  #     - ./apps/meetup/.env
+  #   links:
+  #     - pg_meetup
+  #   depends_on:
+  #     - rabbitmq
   pg_auth:
     container_name: pg_auth
     image: postgres:14-alpine
@@ -49,22 +43,18 @@ services:
       - POSTGRES_DB=user
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-    ports:
-      - '5430:5432'
     volumes:
       - user_db_data:/var/lib/postgresql/data
-  pg_meetup:
-    container_name: pg_meetup
-    image: postgres:14-alpine
-    restart: always
-    environment:
-      - POSTGRES_DB=meetup
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-    ports:
-      - '5431:5432'
-    volumes:
-      - meetup_db_data:/var/lib/postgresql/data
+  # pg_meetup:
+  #   container_name: pg_meetup
+  #   image: postgres:14-alpine
+  #   restart: always
+  #   environment:
+  #     - POSTGRES_DB=meetup
+  #     - POSTGRES_USER=root
+  #     - POSTGRES_PASSWORD=root
+  #   volumes:
+  #     - meetup_db_data:/var/lib/postgresql/data
   elasticsearch:
     image: elasticsearch:8.8.0
     ports:
@@ -74,5 +64,5 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
 volumes:
-  meetup_db_data:
+  # meetup_db_data:
   user_db_data:

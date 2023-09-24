@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
   HttpCode,
   HttpStatus,
+  MaxFileSizeValidator,
+  ParseFilePipe,
   Post,
   Res,
   UploadedFile,
@@ -24,6 +27,7 @@ import { NAME_JWT_COOKIE } from '../../constants';
 import { AuthGuard } from '../../guards';
 import { ExctractJwtFromCookie } from '../../decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ALLOWED_FILES, MAX_SIZE_IMAGE } from '../../constants/file';
 
 @Controller('auth')
 @UseFilters(new HttpExceptionFilter())
@@ -99,7 +103,15 @@ export class AuthController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   public async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: ALLOWED_FILES }),
+          new MaxFileSizeValidator({ maxSize: MAX_SIZE_IMAGE })
+        ]
+      })
+    )
+    file: Express.Multer.File,
     @ExctractJwtFromCookie(NAME_JWT_COOKIE) tokens: Tokens | null
   ) {
     const { id: userID } = await this.authService.decodeAt(tokens.access_token);
