@@ -25,16 +25,14 @@ services:
     depends_on:
       - pg_auth
       - rabbitmq
-  # meetup:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/meetup/Dockerfile
-  #   env_file:
-  #     - ./apps/meetup/.env
-  #   links:
-  #     - pg_meetup
-  #   depends_on:
-  #     - rabbitmq
+  meetup:
+    build:
+      context: .
+      dockerfile: ./apps/meetup/Dockerfile
+    env_file:
+      - ./apps/meetup/.env
+    depends_on:
+      - rabbitmq
   pg_auth:
     container_name: pg_auth
     image: postgres:14-alpine
@@ -45,16 +43,19 @@ services:
       - POSTGRES_PASSWORD=root
     volumes:
       - user_db_data:/var/lib/postgresql/data
-  # pg_meetup:
-  #   container_name: pg_meetup
-  #   image: postgres:14-alpine
-  #   restart: always
-  #   environment:
-  #     - POSTGRES_DB=meetup
-  #     - POSTGRES_USER=root
-  #     - POSTGRES_PASSWORD=root
-  #   volumes:
-  #     - meetup_db_data:/var/lib/postgresql/data
+  pg_meetup:
+    container_name: pg_meetup
+    build:
+      context: ./apps/meetup/db
+      dockerfile: Dockerfile-db
+    restart: always
+    environment:
+      - POSTGRES_DB=meetup
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    volumes:
+     - ./init.sql:/docker-entrypoint-initdb.d/
+      - meetup_db_data:/var/lib/postgresql/data
   elasticsearch:
     image: elasticsearch:7.17.9
     ports:
@@ -76,6 +77,6 @@ services:
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 volumes:
-  # meetup_db_data:
+  meetup_db_data:
   kibana-data:
   user_db_data:
