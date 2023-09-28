@@ -1,3 +1,4 @@
+import { MicroservicesCommunicationHelper } from 'apps/gateway/src/helpers';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
@@ -9,7 +10,10 @@ import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class ReportService {
-  constructor(@Inject('MEETUP') private meetupClient: ClientProxy) {}
+  constructor(
+    private microservicesCommunicationHelper: MicroservicesCommunicationHelper,
+    @Inject('MEETUP') private meetupClient: ClientProxy
+  ) {}
 
   async getPdf() {
     const base64String = await this.meetupClient

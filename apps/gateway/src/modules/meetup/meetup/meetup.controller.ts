@@ -69,7 +69,7 @@ export class MeetupController {
     };
   }
 
-  @Get('/')
+  @Get('/search')
   async searchMeetup(@Query('text') text: string) {
     const meetups = await this.meetupService.searchMeetup(text);
     return {
