@@ -7,10 +7,10 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
-export class RegService {
+export class RegistrationService {
   constructor(@Inject('MEETUP') private meetupClient: ClientProxy) {}
 
-  async regOnMeetup(userID: number, meetupID: number) {
+  async registerOnMeetup(userID: number, meetupID: number) {
     return await lastValueFrom(
       this.meetupClient.send(REG_USER_ON_MEETUP, { userID, meetupID })
     );

@@ -6,14 +6,14 @@ import { RegMeetupRequest } from '../dto/reg-meetup.request';
 import { MeetupService } from '../meetup/meetup.service';
 
 @Injectable()
-export class RegMeetupService {
+export class RegistrationMeetupService {
   constructor(
     @InjectRepository(MeetupRegistration)
     private meetupRegistrationRepository: Repository<MeetupRegistration>,
     private meetupService: MeetupService
   ) {}
 
-  async addRegMeetup(data: RegMeetupRequest) {
+  async registrationOnMeetup(data: RegMeetupRequest) {
     const meetup = await this.meetupService.findById(data.meetupID);
     return await this.meetupRegistrationRepository.save({
       meetup,

@@ -13,25 +13,25 @@ import {
 } from '@nestjs/common';
 import { ExctractJwtFromCookie } from 'apps/gateway/src/decorators';
 import { Tokens } from '../../auth/interfaces';
-import { RegService } from './registration.service';
+import { RegistrationService } from './registration.service';
 import { AuthService } from '../../auth/auth.service';
 
-@Controller('meetup')
+@Controller('meetup/registration')
 @UseFilters(new HttpExceptionFilter())
 @UseGuards(AuthGuard)
-export class RegController {
+export class RegistrationController {
   constructor(
-    private readonly regService: RegService,
+    private readonly registrationService: RegistrationService,
     private readonly authService: AuthService
   ) {}
 
-  @Post('/reg/:id')
-  async regOnMeetup(
+  @Post('/:id')
+  async registerOnMeetup(
     @Param('id', ParseIntPipe) meetupID: number,
     @ExctractJwtFromCookie(NAME_JWT_COOKIE) tokens: Tokens | null
   ) {
     const { id: userID } = await this.authService.decodeAt(tokens.access_token);
-    await this.regService.regOnMeetup(userID, meetupID);
+    await this.registrationService.registerOnMeetup(userID, meetupID);
 
     return {
       status: HttpStatus.OK,
@@ -39,12 +39,11 @@ export class RegController {
     };
   }
 
-  @Get('/my-reg')
+  @Get('/my')
   async getMyRegistrations(
     @ExctractJwtFromCookie(NAME_JWT_COOKIE) tokens: Tokens | null
   ) {
     const tokenPayload = await this.authService.decodeAt(tokens.access_token);
-
-    return await this.regService.getMyMeetups(tokenPayload.id);
+    return await this.registrationService.getMyMeetups(tokenPayload.id);
   }
 }

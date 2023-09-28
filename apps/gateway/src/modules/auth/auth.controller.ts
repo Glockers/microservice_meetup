@@ -44,7 +44,7 @@ export class AuthController {
       .sendStatus(HttpStatus.NO_CONTENT);
   }
 
-  @Post('reg')
+  @Post('registration')
   @UsePipes(new JoiValidationPipe(registrationRequestSchema))
   async registerUser(@Body() registrationRequest: RegistrationRequest) {
     await this.authService.reg(registrationRequest);
@@ -100,9 +100,9 @@ export class AuthController {
       .sendStatus(HttpStatus.NO_CONTENT);
   }
 
-  @Post('upload')
+  @Post('upload-avatar')
   @UseInterceptors(FileInterceptor('file'))
-  public async uploadFile(
+  public async uploadAvatar(
     @UploadedFile(
       new ParseFilePipe({
         validators: [

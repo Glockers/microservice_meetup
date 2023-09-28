@@ -35,7 +35,7 @@ export class MeetupController {
     return await this.meetupService.getAllMeetups(params);
   }
 
-  @Post('/add')
+  @Post('/')
   @UsePipes(new JoiValidationPipe(createMeetupRequestSchema))
   async addMeetup(@Body() createdMeetupDTO: CreateMeetupRequest) {
     await this.meetupService.addMeetup(createdMeetupDTO);
@@ -45,7 +45,7 @@ export class MeetupController {
     };
   }
 
-  @Delete('/remove/:id')
+  @Delete('/:id')
   async removeMeetupById(@Param('id', ParseIntPipe) id: number) {
     await this.meetupService.removeMeetupById(id);
 
@@ -55,7 +55,7 @@ export class MeetupController {
     };
   }
 
-  @Patch('/update/:id')
+  @Patch('/:id')
   async updateMeetup(
     @Body(new JoiValidationPipe(updateMeetupRequestSchema))
     updateMeetupRequest: CreateMeetupRequest,
@@ -69,8 +69,8 @@ export class MeetupController {
     };
   }
 
-  @Get('/search')
-  async search(@Query('text') text: string) {
+  @Get('/')
+  async searchMeetup(@Query('text') text: string) {
     const meetups = await this.meetupService.searchMeetup(text);
     return {
       status: HttpStatus.OK,

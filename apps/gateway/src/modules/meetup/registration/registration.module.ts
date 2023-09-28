@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { RegService } from './registration.service';
-import { RegController } from './registration.controller';
+import { RegistrationService } from './registration.service';
+import { RegistrationController } from './registration.controller';
 import { AuthModule } from '../../auth';
-import { RabbitmqModule } from '../rabbitmq.module';
+import { RabbitmqModule } from '../helpers/rabbitmq.module';
 
 @Module({
   imports: [AuthModule, RabbitmqModule],
-  providers: [RegService],
-  controllers: [RegController]
+  providers: [RegistrationService],
+  controllers: [RegistrationController]
 })
-export class RegModule {}
+export class RegistrationModule {}
