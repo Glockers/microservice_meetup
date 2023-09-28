@@ -1,20 +1,9 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn
-} from 'typeorm';
-import { Meetup } from './meetup.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('tags')
-export class Tags {
+export class Tag {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @ManyToOne(() => Meetup, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'meetup_id' })
-  meetup: Meetup;
 
   @Column({ name: 'name' })
   name: string;

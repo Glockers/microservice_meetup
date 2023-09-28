@@ -31,7 +31,7 @@ export class MeetupController {
     if (location.lat && location.long) {
       meetups = await this.appService.getRange(location);
     } else {
-      meetups = await this.appService.getAllMeetups();
+      meetups = await this.appService.getMeetups();
     }
     return { meetups };
   }

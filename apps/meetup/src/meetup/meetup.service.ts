@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateMeetupRequest } from '../dto/create-meetup.request';
 import { RpcException } from '@nestjs/microservices';
-import { Meetup, Tags } from '../models';
+import { Meetup, Tag } from '../models';
 import { SearchService } from '../search/search.service';
 import { Point } from 'geojson';
 import { Cordinates } from '../dto/location-meetup.request';
@@ -13,9 +13,7 @@ export class MeetupService {
   constructor(
     private searchService: SearchService,
     @InjectRepository(Meetup)
-    private meetupRepository: Repository<Meetup>,
-    @InjectRepository(Tags)
-    private meetupTagsRepository: Repository<Tags>
+    private meetupRepository: Repository<Meetup>
   ) {}
 
   async addMeetup(data: CreateMeetupRequest): Promise<Meetup> {
@@ -24,30 +22,24 @@ export class MeetupService {
       coordinates: [data.lat, data.long]
     };
 
-    const filteredData = {
-      ...data,
-      tags: undefined,
-      location: pointObject
-    };
-    const meetup = await this.meetupRepository.save(filteredData);
-    const { tags } = data;
-    tags.forEach(async (element) => {
-      await this.meetupTagsRepository.save({
-        meetup,
-        name: element
-      });
+    const tags = data.tags.map((name) => {
+      const tag = new Tag();
+      tag.name = name;
+      return tag;
     });
 
+    const filteredData = {
+      ...data,
+      location: pointObject,
+      tags
+    };
+    const meetup = await this.meetupRepository.save(filteredData);
     this.searchService.indexMeetup(meetup);
     return meetup;
   }
 
-  async getAllMeetups(): Promise<Meetup[]> {
-    return await this.meetupRepository.find({
-      relations: {
-        tags: true
-      }
-    });
+  async getMeetups(): Promise<Meetup[]> {
+    return await this.searchService.getAllRecords();
   }
 
   async getRange(location: Cordinates) {
@@ -56,7 +48,7 @@ export class MeetupService {
       coordinates: [location.long, location.lat]
     };
 
-    const locations = await this.meetupRepository
+    return await this.meetupRepository
       .createQueryBuilder('t_test_location')
       .select([
         '*',
@@ -71,63 +63,43 @@ export class MeetupService {
         range: 100 * 1000
       })
       .getRawMany();
-    return locations;
-  }
-
-  async getFilteredMeetups(): Promise<Meetup[]> {
-    return await this.meetupRepository.find({
-      relations: {
-        tags: true
-      }
-    });
   }
 
   async removeMeetupById(id: number) {
     const selectedMeetup = await this.findById(id);
     await this.meetupRepository.delete(selectedMeetup.id);
-    this.searchService.delete(selectedMeetup.id);
-    return selectedMeetup;
+    return await this.searchService.delete(selectedMeetup.id);
   }
 
   async updateMeetup(updateMeetupRequest: CreateMeetupRequest, id: number) {
     const meetup = await this.findById(id);
     if (updateMeetupRequest.tags && updateMeetupRequest.tags.length !== 0) {
-      await this.clearTags(meetup.id);
-      updateMeetupRequest.tags.forEach(async (element) => {
-        await this.meetupTagsRepository.save({
-          meetup,
-          name: element
-        });
+      meetup.tags = updateMeetupRequest.tags.map((name) => {
+        const tag = new Tag();
+        tag.name = name;
+        return tag;
       });
     }
-    Object.assign(meetup, updateMeetupRequest);
-    await this.meetupRepository.save(meetup);
-    this.searchService.update(meetup);
-    return meetup;
+
+    const updatedMeetup = {
+      ...meetup,
+      updateMeetupRequest,
+      ...meetup.tags
+    };
+    await this.meetupRepository.save(updatedMeetup);
+    this.searchService.update(updatedMeetup);
+    return updatedMeetup;
   }
 
   async findById(id: number): Promise<Meetup> {
-    const selectedUser = await this.meetupRepository.findOneBy({
+    const selectedMeetup = await this.meetupRepository.findOneBy({
       id: id
     });
-    if (!selectedUser) {
+    if (!selectedMeetup) {
       throw new RpcException(
         new NotFoundException(`meetup with id ${id} not found`)
       );
     }
-    return selectedUser;
-  }
-
-  async clearTags(meetupID: number) {
-    const records = await this.meetupTagsRepository.find({
-      where: {
-        meetup: {
-          id: meetupID
-        }
-      }
-    });
-    records.forEach(
-      async (tag) => await this.meetupTagsRepository.delete(tag.id)
-    );
+    return selectedMeetup;
   }
 }

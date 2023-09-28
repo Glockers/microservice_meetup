@@ -48,19 +48,36 @@ export class SearchService {
     await this.indexMeetup(meetup);
   }
 
-  async search(text: string) {
-    const result = await this.elasticsearchService.search<MeetupSearchResult>({
+  async searchRecords<T>(query: unknown): Promise<T[]> {
+    const result = await this.elasticsearchService.search<T>({
       index: this.index,
-      body: {
-        query: {
-          multi_match: {
-            query: text,
-            fields: ['title', 'description']
-          }
-        }
-      }
+      body: query
     });
+
     const hits = result.hits.hits;
     return hits.map((item) => item._source);
+  }
+
+  async search(text: string) {
+    const query = {
+      query: {
+        multi_match: {
+          query: text,
+          fields: ['title', 'description']
+        }
+      }
+    };
+
+    return this.searchRecords<MeetupSearchResult>(query);
+  }
+
+  async getAllRecords() {
+    const query = {
+      query: {
+        match_all: {}
+      }
+    };
+
+    return this.searchRecords<Meetup>(query);
   }
 }

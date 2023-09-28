@@ -33,7 +33,7 @@ export class ReportService {
       color: rgb(0, 0.53, 0.71)
     });
 
-    const meetups = await this.meetupService.getAllMeetups();
+    const meetups = await this.meetupService.getMeetups();
     height -= 30;
     meetups.forEach((meetup, index) => {
       page.drawText(`${index + 1}.${meetup.title}`, {
@@ -51,7 +51,7 @@ export class ReportService {
   }
 
   async getCsvMeetups() {
-    const meetups = await this.meetupService.getAllMeetups();
+    const meetups = await this.meetupService.getMeetups();
     return unparse({
       fields: ['Список митапов'],
       data: meetups.map((meetup) => [meetup.title])
