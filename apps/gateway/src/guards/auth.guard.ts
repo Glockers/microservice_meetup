@@ -15,7 +15,6 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    console.log(request);
     const tokens = request?.cookies[NAME_JWT_COOKIE] as Tokens;
     if (!tokens || Object.keys(tokens).length === 0) return false;
     return await this.authService.validateAt(tokens);

@@ -41,9 +41,11 @@ export class AuthController {
   @UsePipes(new JoiValidationPipe(authRequestSchema))
   async loginUser(@Body() authRequest: AuthRequest, @Res() response: Response) {
     const tokens = await this.authService.login(authRequest);
-    response
-      .cookie(NAME_JWT_COOKIE, tokens, { httpOnly: true })
-      .sendStatus(HttpStatus.NO_CONTENT);
+    this.cookieHelper.setCookie(response, NAME_JWT_COOKIE, tokens, {
+      httpOnly: true
+    });
+
+    response.sendStatus(HttpStatus.OK);
   }
 
   @Post('registration')
@@ -63,7 +65,6 @@ export class AuthController {
     @Res() response: Response,
     @ExctractJwtFromCookie(NAME_JWT_COOKIE) tokens: Tokens | null
   ) {
-    console.log('test logout');
     await this.authService.logout(tokens);
     this.cookieHelper.clearCookie(response, NAME_JWT_COOKIE);
     response.send({
