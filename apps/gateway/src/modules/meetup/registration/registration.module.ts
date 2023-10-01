@@ -3,10 +3,11 @@ import { RegistrationService } from './registration.service';
 import { RegistrationController } from './registration.controller';
 import { AuthModule } from '../../auth';
 import { RabbitmqModule } from '../helpers/rabbitmq.module';
+import { MeetupCommunication } from '../helpers';
 
 @Module({
   imports: [AuthModule, RabbitmqModule],
-  providers: [RegistrationService],
+  providers: [RegistrationService, MeetupCommunication],
   controllers: [RegistrationController]
 })
 export class RegistrationModule {}

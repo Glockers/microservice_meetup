@@ -22,7 +22,7 @@ import { UseFilters } from '@nestjs/common';
 import { Response, Express } from 'express';
 import { Tokens } from './interfaces';
 import { HttpExceptionFilter } from '../../filters/controller.filter';
-import { JoiValidationPipe } from '../../helpers';
+import { CookieHelper, JoiValidationPipe } from '../../helpers';
 import { NAME_JWT_COOKIE } from '../../constants';
 import { AuthGuard } from '../../guards';
 import { ExctractJwtFromCookie } from '../../decorators';
@@ -32,13 +32,15 @@ import { ALLOWED_FILES, MAX_SIZE_IMAGE } from '../../constants/file';
 @Controller('auth')
 @UseFilters(new HttpExceptionFilter())
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly cookieHelper: CookieHelper
+  ) {}
 
   @Post('login')
   @UsePipes(new JoiValidationPipe(authRequestSchema))
   async loginUser(@Body() authRequest: AuthRequest, @Res() response: Response) {
     const tokens = await this.authService.login(authRequest);
-
     response
       .cookie(NAME_JWT_COOKIE, tokens, { httpOnly: true })
       .sendStatus(HttpStatus.NO_CONTENT);
@@ -58,13 +60,13 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async logout(
-    @Res() res: Response,
+    @Res() response: Response,
     @ExctractJwtFromCookie(NAME_JWT_COOKIE) tokens: Tokens | null
   ) {
+    console.log('test logout');
     await this.authService.logout(tokens);
-    res.clearCookie(NAME_JWT_COOKIE);
-
-    res.send({
+    this.cookieHelper.clearCookie(response, NAME_JWT_COOKIE);
+    response.send({
       message: 'user is logout'
     });
   }
@@ -80,9 +82,9 @@ export class AuthController {
         .status(HttpStatus.UNAUTHORIZED)
         .json({ message: 'Refresh token is missing or invalid' });
     const newTokens = await this.authService.refreshRt(tokens);
-    response
-      .cookie(NAME_JWT_COOKIE, newTokens, { httpOnly: true })
-      .sendStatus(HttpStatus.NO_CONTENT);
+    this.cookieHelper.setCookie(response, NAME_JWT_COOKIE, newTokens, {
+      httpOnly: true
+    });
   }
 
   @Post('refresh-at')
@@ -95,13 +97,14 @@ export class AuthController {
         .status(HttpStatus.UNAUTHORIZED)
         .json({ message: 'rt is empty' });
     const newTokens = await this.authService.refreshAt(tokens);
-    response
-      .cookie(NAME_JWT_COOKIE, newTokens, { httpOnly: true })
-      .sendStatus(HttpStatus.NO_CONTENT);
+    this.cookieHelper.setCookie(response, NAME_JWT_COOKIE, newTokens, {
+      httpOnly: true
+    });
   }
 
   @Post('upload-avatar')
   @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(AuthGuard)
   public async uploadAvatar(
     @UploadedFile(
       new ParseFilePipe({

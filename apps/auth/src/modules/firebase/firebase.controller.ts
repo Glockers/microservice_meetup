@@ -16,6 +16,6 @@ export class FirebaseController {
     @Payload('userID') userID: number
   ) {
     this.firebaseService.uploadAvatar(userID, file);
-    return {};
+    return true;
   }
 }
