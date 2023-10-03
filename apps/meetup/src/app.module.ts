@@ -6,9 +6,14 @@ import { MeetupModule } from './meetup/meetup.module';
 import { RegistrationMeetupModule } from './registration/reg-meetup.module';
 import { ReportModule } from './report/report.module';
 import { SearchModule } from './search/search.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { dataSourceOptions } from '../db/typeorm.config';
 
 @Module({
   imports: [
+    TypeOrmModule.forRootAsync({
+      useFactory: () => dataSourceOptions
+    }),
     MeetupModule,
     RegistrationMeetupModule,
     ReportModule,
