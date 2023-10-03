@@ -1,7 +1,7 @@
 import { config as dotenvConfig } from 'dotenv';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-dotenvConfig({ path: './apps/auth/.env' });
+dotenvConfig({ path: './apps/meetup/.env' });
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -10,7 +10,7 @@ export const dataSourceOptions: DataSourceOptions = {
   username: `${process.env.TYPEORM_USERNAME}`,
   password: `${process.env.TYPEORM_PASSWORD}`,
   database: `${process.env.TYPEORM_DATABASE}`,
-  entities: ['../src/models/*.entity.ts'],
+  entities: ['../**/models/*.entity.ts'],
   migrations: ['../db/migrations/*'],
   synchronize: false
 };

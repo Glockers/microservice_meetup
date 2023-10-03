@@ -8,7 +8,7 @@ describe('GatewayController (e2e)', () => {
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [GatewayModule],
+      imports: [GatewayModule]
     }).compile();
 
     app = moduleFixture.createNestApplication();
