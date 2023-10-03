@@ -17,7 +17,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/meetup/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/meetup/test/jest-e2e.json",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:create:auth": "npm run typeorm -- migration:create ./apps/auth/db/migrations/%npm_config_name%",
+    "migration:run:auth": "npm run typeorm migration:run -- -d ./apps/auth/db/typeorm.config.ts",
+    "migration:generate:auth": "npm run typeorm -- -d ./apps/auth/db/typeorm.config.ts migration:generate ./apps/auth/db/migrations/%npm_config_name%",
+    "migration:revert:auth": "npm run typeorm -- -d ./apps/auth/db/typeorm.config.ts migration:revert"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.9.0",
