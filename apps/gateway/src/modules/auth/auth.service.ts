@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { RegistrationRequest } from './dto/reg-request';
-import { AuthRequest } from './dto/auth-request';
+import { RegistrationRequest, AuthRequest } from './dto';
 import { Tokens } from './interfaces';
 import {
   AUTH_DECODE_AT,

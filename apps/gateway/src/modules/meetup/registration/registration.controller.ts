@@ -1,6 +1,5 @@
 import { AuthGuard } from './../../../guards/auth.guard';
-import { HttpExceptionFilter } from './../../../filters/controller.filter';
-import { NAME_JWT_COOKIE } from './../../../constants/jwt';
+import { NAME_JWT_COOKIE } from './../../../constants';
 import {
   Controller,
   Get,
@@ -15,6 +14,7 @@ import { ExctractJwtFromCookie } from 'apps/gateway/src/decorators';
 import { Tokens } from '../../auth/interfaces';
 import { RegistrationService } from './registration.service';
 import { AuthService } from '../../auth/auth.service';
+import { HttpExceptionFilter } from 'apps/gateway/src/filters';
 
 @Controller('meetup/registration')
 @UseFilters(new HttpExceptionFilter())

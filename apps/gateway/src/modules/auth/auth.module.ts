@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { RmqModule } from '@app/common';
-import { AuthCommunication } from './helpers/auth-communication';
+import { AuthCommunication } from './helpers';
 import { CookieHelper } from '../../helpers';
 
 @Module({

@@ -13,7 +13,6 @@ import {
   UsePipes
 } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
-import { CreateMeetupRequest } from '../dto/create-meetup.request';
 import {
   createMeetupRequestSchema,
   updateMeetupRequestSchema
@@ -21,8 +20,8 @@ import {
 import { JoiValidationPipe } from '../../../helpers';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../../guards';
-import { HttpExceptionFilter } from '../../../filters/controller.filter';
-import { LocationMeetupRequest } from '../dto/location-meetup.request';
+import { HttpExceptionFilter } from '../../../filters';
+import { CreateMeetupRequest, LocationMeetupRequest } from '../dto';
 
 @Controller('meetup')
 @UseGuards(AuthGuard)

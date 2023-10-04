@@ -1,3 +1,6 @@
+import { UseFilters } from '@nestjs/common';
+import { Response, Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   Body,
   Controller,
@@ -14,20 +17,18 @@ import {
   UsePipes
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegistrationRequest } from './dto/reg-request';
-import { registrationRequestSchema } from './schemas/reg.schema';
-import { authRequestSchema } from './schemas/auth.schema';
-import { AuthRequest } from './dto/auth-request';
-import { UseFilters } from '@nestjs/common';
-import { Response, Express } from 'express';
+import { RegistrationRequest, AuthRequest } from './dto';
+import { authRequestSchema, registrationRequestSchema } from './schemas';
 import { Tokens } from './interfaces';
-import { HttpExceptionFilter } from '../../filters/controller.filter';
+import { HttpExceptionFilter } from '../../filters';
 import { CookieHelper, JoiValidationPipe } from '../../helpers';
-import { NAME_JWT_COOKIE } from '../../constants';
 import { AuthGuard } from '../../guards';
 import { ExctractJwtFromCookie } from '../../decorators';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ALLOWED_FILES, MAX_SIZE_IMAGE } from '../../constants/file';
+import {
+  ALLOWED_FILES,
+  MAX_SIZE_IMAGE,
+  NAME_JWT_COOKIE
+} from '../../constants';
 
 @Controller('auth')
 @UseFilters(new HttpExceptionFilter())

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { Meetup } from 'apps/meetup/src/models';
-import { CreateMeetupRequest } from '../dto/create-meetup.request';
 import {
   ADD_MEETUP,
   ALL_MEETUPS,
@@ -8,7 +7,7 @@ import {
   SMART_SEARCH_MEETUP,
   UPDATE_MEETUP
 } from 'apps/gateway/src/constants';
-import { LocationMeetupRequest } from '../dto/location-meetup.request';
+import { LocationMeetupRequest, CreateMeetupRequest } from '../dto';
 import { MeetupCommunication } from '../helpers';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { MeetupModule } from './meetup';
+import { MeetupModule } from './meetup/meetup.module';
 import { ReportModule } from './report';
-import { RegistrationModule } from './registration';
+import { RegistrationModule } from './registration/registration.module';
 
 @Module({
   imports: [MeetupModule, ReportModule, RegistrationModule]
