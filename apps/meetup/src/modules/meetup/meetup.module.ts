@@ -3,7 +3,7 @@ import { MeetupController } from './meetup.controller';
 import { MeetupService } from './meetup.service';
 import { SearchModule } from '../search/search.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Meetup, MeetupRegistration, Tag } from '../models';
+import { Meetup, MeetupRegistration, Tag } from '../../models';
 
 @Module({
   imports: [

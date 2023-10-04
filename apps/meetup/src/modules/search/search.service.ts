@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { MeetupSearchResult } from '../types/postSearchBody.interface';
-import { Meetup } from '../models';
+import { MeetupSearchResult } from '../../types';
+import { Meetup } from '../../models';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()

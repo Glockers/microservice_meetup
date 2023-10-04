@@ -2,15 +2,14 @@ import { Controller, UseFilters } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { RpcFilter } from '@app/common';
-import { CreateMeetupRequest } from '../dto/create-meetup.request';
+import { Cordinates, CreateMeetupRequest } from '../../dto';
 import {
   ADD_MEETUP,
   ALL_MEETUPS,
   REMOVE_MEETUP,
   UPDATE_MEETUP
-} from '../constants/meetup-endpoints';
-import { Meetup } from '../models';
-import { Cordinates } from '../dto/location-meetup.request';
+} from '../../constants/meetup-endpoints';
+import { Meetup } from '../../models';
 
 @Controller()
 @UseFilters(new RpcFilter())

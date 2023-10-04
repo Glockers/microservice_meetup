@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MeetupRegistration } from '../models';
+import { MeetupRegistration } from '../../models';
 import { Repository } from 'typeorm';
-import { RegMeetupRequest } from '../dto/reg-meetup.request';
+import { RegMeetupRequest } from '../../dto';
 import { MeetupService } from '../meetup/meetup.service';
 
 @Injectable()

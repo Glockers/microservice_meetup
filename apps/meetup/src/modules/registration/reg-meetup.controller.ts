@@ -2,11 +2,8 @@ import { RpcFilter } from '@app/common';
 import { Controller, UseFilters } from '@nestjs/common';
 import { RegistrationMeetupService } from './reg-meetup.service';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import {
-  REG_USER_ON_MEETUP,
-  MY_REG_MEETUPS
-} from '../constants/reg-meetup-endpoints';
-import { RegMeetupRequest } from '../dto/reg-meetup.request';
+import { REG_USER_ON_MEETUP, MY_REG_MEETUPS } from '../../constants';
+import { RegMeetupRequest } from '../../dto';
 
 @Controller()
 @UseFilters(new RpcFilter())

@@ -4,7 +4,7 @@ import { PDFDocument, rgb } from 'pdf-lib';
 import { MeetupService } from '../meetup/meetup.service';
 import { serializeUint8Array } from '@app/common';
 import { unparse } from 'papaparse';
-import { RU_URL_FONT } from '../constants/ru-font';
+import { RU_URL_FONT } from '../../constants';
 
 @Injectable()
 export class ReportService {

@@ -1,12 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateMeetupRequest } from '../dto/create-meetup.request';
+import { CreateMeetupRequest, Cordinates } from '../../dto';
 import { RpcException } from '@nestjs/microservices';
-import { Meetup, Tag } from '../models';
+import { Meetup, Tag } from '../../models';
 import { SearchService } from '../search/search.service';
 import { Point } from 'geojson';
-import { Cordinates } from '../dto/location-meetup.request';
 
 @Injectable()
 export class MeetupService {

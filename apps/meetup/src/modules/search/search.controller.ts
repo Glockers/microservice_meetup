@@ -1,7 +1,7 @@
 import { RpcFilter } from '@app/common';
 import { Controller, UseFilters } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import { SMART_SEARCH_MEETUP } from '../constants/meetup-endpoints';
+import { SMART_SEARCH_MEETUP } from '../../constants';
 import { SearchService } from './search.service';
 
 @Controller()
