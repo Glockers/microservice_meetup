@@ -1,11 +1,11 @@
 import { Point } from 'geojson';
-import { Tags } from './tag-meetup.entity';
+import { Tag } from './tag-meetup.entity';
 import {
   Column,
   Entity,
   Index,
   JoinTable,
-  OneToMany,
+  ManyToMany,
   PrimaryGeneratedColumn
 } from 'typeorm';
 
@@ -26,9 +26,9 @@ export class Meetup {
   @Column({ type: 'timestamp' })
   dateEnd: Date;
 
-  @OneToMany(() => Tags, (tags) => tags.meetup)
+  @ManyToMany(() => Tag, { cascade: true })
   @JoinTable()
-  tags: Tags[];
+  tags: Tag[];
 
   @Index({ spatial: true })
   @Column({

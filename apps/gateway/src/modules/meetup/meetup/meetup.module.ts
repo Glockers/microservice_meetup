@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
 import { MeetupController } from './meetup.controller';
-import { AuthModule } from '../../auth';
-import { RabbitmqModule } from '../rabbitmq.module';
+import { RabbitmqModule } from '../helpers';
+import { MeetupCommunication } from '../helpers';
+import { AuthModule } from '../../auth/auth.module';
 
 @Module({
   imports: [AuthModule, RabbitmqModule],
-  providers: [MeetupService],
+  providers: [MeetupService, MeetupCommunication],
   controllers: [MeetupController]
 })
 export class MeetupModule {}

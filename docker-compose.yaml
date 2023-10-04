@@ -5,6 +5,26 @@ services:
     image: rabbitmq
     ports:
       - '5672:5672'
+  elasticsearch:
+    image: elasticsearch:7.17.9
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+  kibana:
+    depends_on:
+    - elasticsearch
+    image: docker.elastic.co/kibana/kibana:7.17.9
+    container_name: kibana
+    volumes:
+      - kibana-data:/usr/share/kibana/data
+    ports:
+    - 5601:5601
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
   gateway:
     build:
       context: .
@@ -56,26 +76,6 @@ services:
     volumes:
      - ./init.sql:/docker-entrypoint-initdb.d/
       - meetup_db_data:/var/lib/postgresql/data
-  elasticsearch:
-    image: elasticsearch:7.17.9
-    ports:
-      - 9200:9200
-      - 9300:9300
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-  kibana:
-    depends_on:
-    - elasticsearch
-    image: docker.elastic.co/kibana/kibana:7.17.9
-    container_name: kibana
-    volumes:
-      - kibana-data:/usr/share/kibana/data
-    ports:
-    - 5601:5601
-    restart: always
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 volumes:
   meetup_db_data:
   kibana-data:

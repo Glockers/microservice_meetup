@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { mergedConfigValidationSchema } from './config';
-import { MeetupMicroserviceModule } from './modules/meetup';
-import { AuthModule } from './modules/auth';
+import { MeetupMicroserviceModule } from './modules/meetup/meetup-microservice.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [

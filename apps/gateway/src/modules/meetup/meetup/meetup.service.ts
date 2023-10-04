@@ -1,8 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
+import { Injectable } from '@nestjs/common';
 import { Meetup } from 'apps/meetup/src/models';
-import { CreateMeetupRequest } from '../dto/create-meetup.request';
 import {
   ADD_MEETUP,
   ALL_MEETUPS,
@@ -10,37 +7,43 @@ import {
   SMART_SEARCH_MEETUP,
   UPDATE_MEETUP
 } from 'apps/gateway/src/constants';
-import { LocationMeetupRequest } from '../dto/location-meetup.request';
+import { LocationMeetupRequest, CreateMeetupRequest } from '../dto';
+import { MeetupCommunication } from '../helpers';
 
 @Injectable()
 export class MeetupService {
-  constructor(@Inject('MEETUP') private meetupClient: ClientProxy) {}
+  constructor(private readonly meetupCommunication: MeetupCommunication) {}
 
   async getAllMeetups(params: LocationMeetupRequest) {
-    return await lastValueFrom(
-      this.meetupClient.send<Meetup[]>(ALL_MEETUPS, { params })
+    return await this.meetupCommunication.sendToMicroservice<Meetup[]>(
+      ALL_MEETUPS,
+      { params }
     );
   }
 
   async addMeetup(createdMeetupDTO: CreateMeetupRequest) {
-    return await lastValueFrom(
-      this.meetupClient.send(ADD_MEETUP, { createdMeetupDTO })
-    );
+    return await this.meetupCommunication.sendToMicroservice(ADD_MEETUP, {
+      createdMeetupDTO
+    });
   }
 
   async removeMeetupById(id: number) {
-    return await lastValueFrom(this.meetupClient.send(REMOVE_MEETUP, { id }));
+    return await this.meetupCommunication.sendToMicroservice(REMOVE_MEETUP, {
+      id
+    });
   }
 
   async updateMeetup(updateMeetupRequest: CreateMeetupRequest, id) {
-    return await lastValueFrom(
-      this.meetupClient.send(UPDATE_MEETUP, { updateMeetupRequest, id })
-    );
+    return await this.meetupCommunication.sendToMicroservice(UPDATE_MEETUP, {
+      updateMeetupRequest,
+      id
+    });
   }
 
   async searchMeetup(text: string) {
-    return await lastValueFrom(
-      this.meetupClient.send(SMART_SEARCH_MEETUP, { text })
+    return await this.meetupCommunication.sendToMicroservice(
+      SMART_SEARCH_MEETUP,
+      { text }
     );
   }
 }
