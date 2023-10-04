@@ -3,12 +3,12 @@ import { EventPattern, Payload } from '@nestjs/microservices';
 import { RpcFilter } from '@app/common';
 import { USER_LOAD_FILE } from '../../constants';
 import { Express } from 'express';
-import { FirebaseService } from '../firebase/firebase.service';
+import { UserService } from './user.service';
 
 @Controller()
 @UseFilters(new RpcFilter())
-export class FirebaseController {
-  constructor(private firebaseService: FirebaseService) {}
+export class UserController {
+  constructor(private firebaseService: UserService) {}
 
   @EventPattern(USER_LOAD_FILE)
   async uploadAvatar(

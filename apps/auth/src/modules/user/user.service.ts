@@ -7,7 +7,7 @@ import { User } from '../../models';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class FirebaseService {
+export class UserService {
   private storage;
   constructor(
     @Inject('FIREBASE_APP') private firebaseApp: FirebaseApp,

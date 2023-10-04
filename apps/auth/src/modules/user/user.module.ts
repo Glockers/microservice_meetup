@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
 import { initializeApp } from 'firebase/app';
-import { FirebaseService } from './firebase.service';
-import { FirebaseController } from './firebase.controller';
+import { UserService } from './user.service';
+import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../../models';
 
@@ -29,8 +29,8 @@ const firebaseProvider = {
     ConfigModule.forRoot({ cache: true }),
     TypeOrmModule.forFeature([User])
   ],
-  providers: [firebaseProvider, FirebaseService],
-  controllers: [FirebaseController],
-  exports: [FirebaseService]
+  providers: [firebaseProvider, UserService],
+  controllers: [UserController],
+  exports: [UserService]
 })
-export class FirabaseModule {}
+export class UserModule {}
