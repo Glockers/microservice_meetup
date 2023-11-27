@@ -1,0 +1,82 @@
+version: '3.9'
+
+services:
+  rabbitmq: 
+    image: rabbitmq
+    ports:
+      - '5672:5672'
+  elasticsearch:
+    image: elasticsearch:7.17.9
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+  kibana:
+    depends_on:
+    - elasticsearch
+    image: docker.elastic.co/kibana/kibana:7.17.9
+    container_name: kibana
+    volumes:
+      - kibana-data:/usr/share/kibana/data
+    ports:
+    - 5601:5601
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile
+    env_file:
+      - ./apps/gateway/.env
+    depends_on:
+      - rabbitmq
+      - auth
+    ports:
+      - '3000:3000'
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+    env_file:
+      - ./apps/auth/.env
+    depends_on:
+      - pg_auth
+      - rabbitmq
+  meetup:
+    build:
+      context: .
+      dockerfile: ./apps/meetup/Dockerfile
+    env_file:
+      - ./apps/meetup/.env
+    depends_on:
+      - rabbitmq
+  pg_auth:
+    container_name: pg_auth
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=user
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+  pg_meetup:
+    container_name: pg_meetup
+    build:
+      context: ./apps/meetup/db
+      dockerfile: Dockerfile-db
+    restart: always
+    environment:
+      - POSTGRES_DB=meetup
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    volumes:
+     - ./init.sql:/docker-entrypoint-initdb.d/
+      - meetup_db_data:/var/lib/postgresql/data
+volumes:
+  meetup_db_data:
+  kibana-data:
+  user_db_data:
