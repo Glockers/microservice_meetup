@@ -1,0 +1,10 @@
+.git
+.gitignore
+.vscode
+dist
+local_pgdata
+postman
+node_modules
+README.md
+npm-debug.log
+.cache
